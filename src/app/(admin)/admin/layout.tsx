@@ -7,12 +7,16 @@ import {
   Package,
   ShoppingCart,
   LogOut,
+  Tag,
+  Star,
 } from "lucide-react";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/orders", label: "Commandes", icon: ShoppingCart },
   { href: "/admin/products", label: "Produits", icon: Package },
+  { href: "/admin/promos", label: "Promos", icon: Tag },
+  { href: "/admin/reviews", label: "Avis", icon: Star },
 ];
 
 export default function AdminLayout({

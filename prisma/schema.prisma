@@ -24,6 +24,7 @@ model Product {
   createdAt      DateTime    @default(now())
   updatedAt      DateTime    @updatedAt
   orderItems     OrderItem[]
+  reviews        Review[]
 }
 
 model Order {
@@ -32,7 +33,9 @@ model Order {
   status          String      @default("EN_ATTENTE")
   subtotal        Float
   shipping        Float
+  discount        Float       @default(0)
   total           Float
+  promoCode       String?
   customerName    String
   customerPhone   String
   customerCity    String
@@ -62,4 +65,28 @@ model Admin {
   email        String   @unique
   passwordHash String
   createdAt    DateTime @default(now())
+}
+
+model PromoCode {
+  id        String    @id @default(cuid())
+  code      String    @unique
+  type      String    // PERCENTAGE or FIXED
+  value     Float     // percentage (e.g. 10) or fixed amount (e.g. 25)
+  minOrder  Float     @default(0)
+  maxUses   Int       @default(0) // 0 = unlimited
+  usedCount Int       @default(0)
+  active    Boolean   @default(true)
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model Review {
+  id           String   @id @default(cuid())
+  productId    String
+  customerName String
+  rating       Int      // 1-5
+  comment      String
+  approved     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 }

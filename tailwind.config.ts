@@ -28,6 +28,9 @@ const config: Config = {
         "slide-in-right": "slideInRight 0.4s ease-out forwards",
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         "bounce-gentle": "bounceGentle 2s infinite",
+        "shimmer": "shimmer 4s linear infinite",
+        "shake": "shake 0.4s ease-in-out",
+        "scale-in": "scaleIn 0.3s ease-out forwards",
       },
       keyframes: {
         fadeIn: {
@@ -45,6 +48,21 @@ const config: Config = {
         bounceGentle: {
           "0%, 100%": { transform: "translateY(0)" },
           "50%": { transform: "translateY(-5px)" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "100% center" },
+          "100%": { backgroundPosition: "-100% center" },
+        },
+        shake: {
+          "0%, 100%": { transform: "translateX(0)" },
+          "20%": { transform: "translateX(-3px)" },
+          "40%": { transform: "translateX(3px)" },
+          "60%": { transform: "translateX(-2px)" },
+          "80%": { transform: "translateX(2px)" },
+        },
+        scaleIn: {
+          "0%": { opacity: "0", transform: "scale(0.8)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
         },
       },
     },

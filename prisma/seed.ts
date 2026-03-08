@@ -166,6 +166,8 @@ async function main() {
   console.log("Seeding database...");
 
   // Clear existing data
+  await prisma.review.deleteMany();
+  await prisma.promoCode.deleteMany();
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
   await prisma.product.deleteMany();
@@ -186,12 +188,51 @@ async function main() {
     data: { email, passwordHash },
   });
 
+  // Create promo codes
+  await prisma.promoCode.create({
+    data: {
+      code: "BIENVENUE10",
+      type: "PERCENTAGE",
+      value: 10,
+      minOrder: 0,
+      maxUses: 0,
+      active: true,
+    },
+  });
+  await prisma.promoCode.create({
+    data: {
+      code: "DAHAB25",
+      type: "FIXED",
+      value: 25,
+      minOrder: 150,
+      maxUses: 100,
+      active: true,
+    },
+  });
+  console.log("Created 2 promo codes: BIENVENUE10 (10%), DAHAB25 (25 MAD off min 150)");
+
+  // Create sample reviews
+  const products = await prisma.product.findMany({ take: 4 });
+  const reviewsData = [
+    { customerName: "Fatima Z.", rating: 5, comment: "Tres belle bague, exactement comme sur la photo. Livraison rapide a Casablanca!" },
+    { customerName: "Amina B.", rating: 4, comment: "Collier magnifique, bonne qualite. Je recommande DAHAB." },
+    { customerName: "Sara M.", rating: 5, comment: "J'ai commande 3 bijoux, tous superbes. Le bracelet amazigh est mon prefere!" },
+    { customerName: "Nadia K.", rating: 5, comment: "Rapport qualite prix imbattable. Les boucles d'oreilles sont elegantes." },
+  ];
+  for (let i = 0; i < products.length && i < reviewsData.length; i++) {
+    await prisma.review.create({
+      data: { productId: products[i].id, ...reviewsData[i], approved: true },
+    });
+  }
+  console.log("Created 4 sample reviews");
+
   console.log("\n========================================");
   console.log("  DAHAB Admin Credentials");
   console.log("========================================");
   console.log(`  Email:    ${email}`);
   console.log(`  Password: ${password}`);
   console.log("========================================");
+  console.log("  Promo Codes: BIENVENUE10, DAHAB25");
   console.log("  IMPORTANT: Change password in production!");
   console.log("========================================\n");
 

@@ -26,6 +26,18 @@ body {
     background-color: #C9A84C;
     color: white;
   }
+
+  /* Accessible focus-visible styles */
+  *:focus-visible {
+    outline: 2px solid #C9A84C;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Remove default focus outline for mouse users */
+  *:focus:not(:focus-visible) {
+    outline: none;
+  }
 }
 
 @layer components {
@@ -61,8 +73,33 @@ body {
   }
 
   .gold-gradient {
-    @apply bg-gradient-to-r from-brand-gold-dark via-brand-gold to-brand-gold-light
-           bg-clip-text text-transparent;
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      135deg,
+      #B8963A 0%,
+      #C9A84C 25%,
+      #E8D48B 50%,
+      #C9A84C 75%,
+      #B8963A 100%
+    );
+    background-size: 200% auto;
+  }
+
+  /* Shimmer animation for gold text */
+  .gold-shimmer {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(
+      110deg,
+      #B8963A 0%,
+      #C9A84C 20%,
+      #E8D48B 40%,
+      #F5ECD0 50%,
+      #E8D48B 60%,
+      #C9A84C 80%,
+      #B8963A 100%
+    );
+    background-size: 250% auto;
+    animation: shimmer 4s linear infinite;
   }
 }
 
@@ -72,17 +109,56 @@ body {
   }
 }
 
+/* Gold shimmer keyframe */
+@keyframes shimmer {
+  0% {
+    background-position: 100% center;
+  }
+  100% {
+    background-position: -100% center;
+  }
+}
+
+/* Image zoom magnifier cursor */
+.zoom-cursor {
+  cursor: zoom-in;
+}
+
 /* Scrollbar styling */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #FAF7F2;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #C9A84C;
-  border-radius: 4px;
+  background: #d4c5a0;
+  border-radius: 99px;
+  transition: background 0.2s;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #B8963A;
+  background: #C9A84C;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d4c5a0 transparent;
+}
+
+/* Smooth page transitions */
+main {
+  animation: pageEnter 0.4s ease-out;
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
