@@ -1,36 +1,116 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DAHAB - Bijouterie en Ligne Marocaine
 
-## Getting Started
+Boutique e-commerce de bijoux pour le marche marocain. Paiement a la livraison (COD), livraison partout au Maroc.
 
-First, run the development server:
+## Stack technique
+
+- **Frontend**: Next.js 14, TypeScript, Tailwind CSS, Framer Motion
+- **Backend**: Next.js API Routes, Prisma ORM
+- **Base de donnees**: SQLite (dev) / PostgreSQL (prod)
+- **Authentification**: JWT (jose) + bcryptjs
+- **Validation**: Zod + react-hook-form
+- **Analytics**: Meta Pixel + Google Analytics 4
+
+## Installation rapide
 
 ```bash
+# 1. Cloner le projet
+git clone <repo-url> dahab
+cd dahab
+
+# 2. Installer les dependances
+npm install
+
+# 3. Configurer l'environnement
+cp .env.example .env
+# Editer .env avec vos valeurs
+
+# 4. Creer la base de donnees et inserer les donnees
+npx prisma db push
+npx prisma db seed
+
+# 5. Lancer le serveur de developpement
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Le site sera accessible sur http://localhost:3000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Credentials admin
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Apres le seed, les identifiants admin sont affiches dans la console:
 
-## Learn More
+- **Email**: admin@dahab.ma
+- **Mot de passe**: Dahab2024!
 
-To learn more about Next.js, take a look at the following resources:
+Changez ces identifiants en production!
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Configuration pour la production
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Variables d'environnement requises
 
-## Deploy on Vercel
+```
+DATABASE_URL=postgresql://user:password@host:5432/dahab
+JWT_SECRET=votre-secret-jwt-securise-min-32-chars
+NEXT_PUBLIC_META_PIXEL_ID=votre-pixel-id
+NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+WHATSAPP_PHONE=+212XXXXXXXXX
+NEXT_PUBLIC_SITE_URL=https://votre-domaine.ma
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Deploiement sur Vercel
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+# Installer Vercel CLI
+npm i -g vercel
+
+# Deployer
+vercel --prod
+```
+
+Configurez les variables d'environnement dans les parametres du projet Vercel.
+
+Pour PostgreSQL en production, utilisez Vercel Postgres ou Supabase.
+
+## Structure du projet
+
+```
+src/
+├── app/
+│   ├── (store)/          # Pages publiques (boutique)
+│   ├── (admin)/admin/    # Dashboard admin
+│   └── api/              # API Routes
+├── components/
+│   ├── ui/               # Composants UI reutilisables
+│   ├── store/            # Composants boutique
+│   ├── admin/            # Composants admin
+│   └── marketing/        # Composants conversion
+├── hooks/                # React hooks (cart, countdown, etc.)
+├── lib/                  # Utilitaires et configuration
+├── data/                 # Donnees statiques (villes, seed)
+└── types/                # Types TypeScript
+```
+
+## Pages
+
+| Route | Description |
+|-------|-------------|
+| `/` | Page d'accueil avec bestsellers |
+| `/boutique` | Catalogue avec filtres |
+| `/produit/[slug]` | Fiche produit |
+| `/commander` | Checkout COD |
+| `/confirmation` | Confirmation de commande |
+| `/admin/login` | Connexion admin |
+| `/admin` | Dashboard admin |
+| `/admin/orders` | Gestion des commandes |
+| `/admin/products` | Gestion des produits |
+
+## Personnalisation
+
+### Numero WhatsApp
+Modifiez `WHATSAPP_PHONE` dans `.env` avec votre numero au format E.164
+
+### Couleurs
+Les couleurs de la marque sont dans `tailwind.config.ts` sous `brand`
+
+### Produits
+Ajoutez des produits via le dashboard admin ou editez `prisma/seed.ts`
