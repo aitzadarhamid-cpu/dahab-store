@@ -11,8 +11,10 @@ import { SocialProofTicker } from "@/components/marketing/social-proof-ticker";
 import { ExitIntentPopup } from "@/components/marketing/exit-intent-popup";
 import { UrgencyBar } from "@/components/marketing/urgency-bar";
 import { AbandonedCartBar } from "@/components/marketing/abandoned-cart";
-import { MetaPixel } from "@/components/marketing/meta-pixel";
-import { GoogleAnalytics } from "@/components/marketing/google-analytics";
+import { NewsletterPopup } from "@/components/store/newsletter-popup";
+import { MetaPixel } from "@/components/analytics/meta-pixel";
+import { GoogleAnalytics } from "@/components/analytics/google-analytics";
+import { CookieConsent } from "@/components/analytics/cookie-consent";
 
 export default function StoreLayout({
   children,
@@ -34,6 +36,8 @@ export default function StoreLayout({
           <SocialProofTicker />
           <ExitIntentPopup />
           <AbandonedCartBar />
+          <NewsletterPopup />
+          <CookieConsent />
         </ToastProvider>
       </WishlistProvider>
     </CartProvider>

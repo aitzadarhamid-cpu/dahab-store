@@ -1,8 +1,10 @@
 import Link from "next/link";
+import { NewsletterFooter } from "@/components/store/newsletter-footer";
 
 export function Footer() {
   return (
     <footer className="bg-brand-black text-white">
+      <NewsletterFooter />
       <div className="container-page py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}

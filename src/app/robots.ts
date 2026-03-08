@@ -8,9 +8,20 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin/", "/api/", "/commander", "/_next/"],
+        disallow: ["/admin/", "/api/", "/commander", "/confirmation", "/_next/"],
+      },
+      {
+        userAgent: "Googlebot",
+        allow: "/",
+        disallow: ["/admin/", "/api/", "/commander", "/confirmation", "/_next/"],
+      },
+      {
+        userAgent: "Bingbot",
+        allow: "/",
+        disallow: ["/admin/", "/api/", "/commander", "/confirmation", "/_next/"],
       },
     ],
     sitemap: `${siteUrl}/sitemap.xml`,
+    host: siteUrl,
   };
 }

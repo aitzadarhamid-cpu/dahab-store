@@ -12,6 +12,9 @@ export async function GET() {
       pendingOrders,
       activeProducts,
       topItems,
+      ordersByCity,
+      promoCodes,
+      recentOrders,
     ] = await Promise.all([
       prisma.order.findMany({
         where: {
@@ -28,6 +31,33 @@ export async function GET() {
         _sum: { quantity: true, priceAtOrder: true },
         orderBy: { _sum: { quantity: "desc" } },
         take: 5,
+      }),
+      // Orders grouped by city
+      prisma.order.groupBy({
+        by: ["customerCity"],
+        where: { status: { not: "ANNULEE" } },
+        _count: true,
+        _sum: { total: true },
+        orderBy: { _count: { customerCity: "desc" } },
+        take: 10,
+      }),
+      // Promo code usage stats
+      prisma.promoCode.findMany({
+        where: { usedCount: { gt: 0 } },
+        select: {
+          code: true,
+          type: true,
+          value: true,
+          usedCount: true,
+          active: true,
+        },
+        orderBy: { usedCount: "desc" },
+        take: 10,
+      }),
+      // All orders for conversion rate calculation (last 30 days)
+      prisma.order.findMany({
+        where: { createdAt: { gte: thirtyDaysAgo } },
+        select: { status: true, total: true, createdAt: true },
       }),
     ]);
 
@@ -49,6 +79,35 @@ export async function GET() {
       _count: true,
     });
 
+    // Conversion rate: LIVREE / total orders (last 30 days)
+    const totalRecentOrders = recentOrders.length;
+    const deliveredOrders = recentOrders.filter(
+      (o) => o.status === "LIVREE"
+    ).length;
+    const cancelledOrders = recentOrders.filter(
+      (o) => o.status === "ANNULEE"
+    ).length;
+    const conversionRate =
+      totalRecentOrders > 0
+        ? Math.round((deliveredOrders / totalRecentOrders) * 100)
+        : 0;
+    const cancelRate =
+      totalRecentOrders > 0
+        ? Math.round((cancelledOrders / totalRecentOrders) * 100)
+        : 0;
+
+    // Weekly revenue (group by week)
+    const revenueByWeek: Record<string, number> = {};
+    orders.forEach((o) => {
+      const d = new Date(o.createdAt);
+      // Get ISO week start (Monday)
+      const day = d.getDay();
+      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+      const weekStart = new Date(d.setDate(diff));
+      const key = weekStart.toISOString().split("T")[0];
+      revenueByWeek[key] = (revenueByWeek[key] || 0) + o.total;
+    });
+
     const stats = {
       totalRevenue,
       totalOrders,
@@ -60,6 +119,9 @@ export async function GET() {
       ordersByDay: Object.entries(ordersByDay)
         .map(([date, count]) => ({ date, count }))
         .sort((a, b) => a.date.localeCompare(b.date)),
+      revenueByWeek: Object.entries(revenueByWeek)
+        .map(([week, revenue]) => ({ week, revenue }))
+        .sort((a, b) => a.week.localeCompare(b.week)),
       topProducts: topItems.map((item) => ({
         name: item.productName,
         totalSold: item._sum.quantity || 0,
@@ -69,6 +131,22 @@ export async function GET() {
         status: s.status,
         count: s._count,
       })),
+      ordersByCity: ordersByCity.map((c) => ({
+        city: c.customerCity,
+        count: c._count,
+        revenue: c._sum.total || 0,
+      })),
+      promoStats: promoCodes.map((p) => ({
+        code: p.code,
+        type: p.type,
+        value: p.value,
+        usedCount: p.usedCount,
+        active: p.active,
+      })),
+      conversionRate,
+      cancelRate,
+      deliveredOrders,
+      totalRecentOrders,
     };
 
     return NextResponse.json(stats);

@@ -2,10 +2,31 @@ import { prisma } from "@/lib/prisma";
 import type { Metadata } from "next";
 import { BoutiqueClient } from "./boutique-client";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 export const metadata: Metadata = {
-  title: "Boutique - Collection de Bijoux",
+  title: "Boutique Bijoux en Ligne | Bagues, Colliers, Bracelets au Maroc",
   description:
-    "Parcourez notre collection complete de bijoux: bagues, colliers, bracelets et boucles d'oreilles. De 99 a 299 MAD.",
+    "Parcourez notre collection compl\u00e8te de bijoux en ligne au Maroc : bagues, colliers, bracelets et boucles d'oreilles \u00e9l\u00e9gants de 99 \u00e0 299 MAD. Livraison partout au Maroc. Paiement \u00e0 la livraison.",
+  keywords: [
+    "boutique bijoux maroc",
+    "bijoux en ligne maroc",
+    "acheter bijoux maroc",
+    "bagues colliers bracelets maroc",
+    "bijoux pas cher maroc",
+  ],
+  alternates: {
+    canonical: `${siteUrl}/boutique`,
+  },
+  openGraph: {
+    title: "Boutique Bijoux en Ligne | DAHAB Bijoux Maroc",
+    description:
+      "Collection compl\u00e8te de bijoux \u00e9l\u00e9gants de 99 \u00e0 299 MAD. Livraison partout au Maroc.",
+    url: `${siteUrl}/boutique`,
+    siteName: "DAHAB Bijoux",
+    locale: "fr_MA",
+    type: "website",
+  },
 };
 
 interface Props {

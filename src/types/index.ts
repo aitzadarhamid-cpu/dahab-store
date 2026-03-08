@@ -97,8 +97,21 @@ export interface StatsData {
   activeProducts: number;
   revenueByDay: { date: string; revenue: number }[];
   ordersByDay: { date: string; count: number }[];
+  revenueByWeek: { week: string; revenue: number }[];
   topProducts: { name: string; totalSold: number; revenue: number }[];
   ordersByStatus: { status: string; count: number }[];
+  ordersByCity: { city: string; count: number; revenue: number }[];
+  promoStats: {
+    code: string;
+    type: string;
+    value: number;
+    usedCount: number;
+    active: boolean;
+  }[];
+  conversionRate: number;
+  cancelRate: number;
+  deliveredOrders: number;
+  totalRecentOrders: number;
 }
 
 export interface CheckoutFormData {

@@ -48,6 +48,8 @@ export async function POST(request: NextRequest) {
       customerCity,
       customerAddress,
       customerNote,
+      promoCode,
+      discount: clientDiscount,
       items,
     } = body;
 
@@ -65,7 +67,39 @@ export async function POST(request: NextRequest) {
       0
     );
     const shipping = getShippingCost(subtotal);
-    const total = subtotal + shipping;
+
+    // Validate promo code server-side if provided
+    let discount = 0;
+    let validatedPromoCode: string | null = null; // eslint-disable-line @typescript-eslint/no-unused-vars
+
+    if (promoCode) {
+      const promo = await prisma.promoCode.findUnique({
+        where: { code: promoCode.toUpperCase().trim() },
+      });
+
+      if (promo && promo.active) {
+        const notExpired = !promo.expiresAt || new Date(promo.expiresAt) >= new Date();
+        const notExhausted = promo.maxUses === 0 || promo.usedCount < promo.maxUses;
+        const meetsMinOrder = subtotal >= promo.minOrder;
+
+        if (notExpired && notExhausted && meetsMinOrder) {
+          if (promo.type === "PERCENTAGE") {
+            discount = Math.round((subtotal * promo.value) / 100);
+          } else {
+            discount = Math.min(promo.value, subtotal);
+          }
+          validatedPromoCode = promo.code;
+        }
+      }
+    }
+
+    // Fallback: use client discount only if it matches server calculation
+    if (discount === 0 && clientDiscount > 0 && promoCode) {
+      // Do not trust client-side discount without valid promo
+      discount = 0;
+    }
+
+    const total = subtotal - discount + shipping;
 
     // Generate unique order number
     let orderNumber = generateOrderNumber();
@@ -91,7 +125,9 @@ export async function POST(request: NextRequest) {
           customerNote: customerNote || null,
           subtotal,
           shipping,
+          discount,
           total,
+          promoCode: validatedPromoCode,
           items: {
             create: items.map(
               (item: {
@@ -120,6 +156,14 @@ export async function POST(request: NextRequest) {
         await tx.product.update({
           where: { id: item.id },
           data: { stock: { decrement: item.quantity } },
+        });
+      }
+
+      // Increment promo code usage
+      if (validatedPromoCode) {
+        await tx.promoCode.update({
+          where: { code: validatedPromoCode },
+          data: { usedCount: { increment: 1 } },
         });
       }
 

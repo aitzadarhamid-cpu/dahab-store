@@ -9,6 +9,7 @@ import {
   LogOut,
   Tag,
   Star,
+  Mail,
 } from "lucide-react";
 
 const navItems = [
@@ -17,6 +18,7 @@ const navItems = [
   { href: "/admin/products", label: "Produits", icon: Package },
   { href: "/admin/promos", label: "Promos", icon: Tag },
   { href: "/admin/reviews", label: "Avis", icon: Star },
+  { href: "/admin/newsletter", label: "Newsletter", icon: Mail },
 ];
 
 export default function AdminLayout({

@@ -20,28 +20,40 @@ const siteUrl =
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "DAHAB - Bijoux Elegants pour la Femme Marocaine | Bijouterie en Ligne Maroc",
-    template: "%s | DAHAB Bijoux Maroc",
+    default:
+      "DAHAB | Bijoux en Ligne au Maroc - Bagues, Colliers, Bracelets & Boucles d'Oreilles",
+    template: "DAHAB | %s - Bijoux en Ligne au Maroc",
   },
   description:
-    "Decouvrez DAHAB, votre bijouterie en ligne au Maroc. Bagues, colliers, bracelets et boucles d'oreilles elegants de 99 a 299 MAD. Livraison partout au Maroc. Paiement a la livraison.",
+    "DAHAB, la bijouterie en ligne n\u00b01 au Maroc. D\u00e9couvrez notre collection de bagues, colliers, bracelets et boucles d'oreilles \u00e9l\u00e9gants de 99 \u00e0 299 MAD. Livraison partout au Maroc. Paiement \u00e0 la livraison. Qualit\u00e9 garantie.",
   keywords: [
     "bijoux maroc",
     "bijoux en ligne maroc",
     "bijouterie en ligne maroc",
+    "bague or maroc",
     "bagues femme maroc",
-    "colliers or maroc",
+    "collier or maroc",
+    "colliers femme maroc",
     "bracelets femme maroc",
+    "bracelet or maroc",
     "boucles d'oreilles maroc",
     "bijoux casablanca",
     "bijoux rabat",
     "bijoux marrakech",
+    "bijoux tanger",
+    "bijoux fes",
+    "bijoux agadir",
     "livraison maroc",
-    "paiement livraison",
+    "paiement livraison maroc",
     "bijoux pas cher maroc",
     "accessoires femme maroc",
     "bijoux fantaisie maroc",
     "cadeau femme maroc",
+    "bijoux or plaque maroc",
+    "bijoux argent maroc",
+    "achat bijoux en ligne maroc",
+    "bijouterie maroc",
+    "dahab bijoux",
   ],
   alternates: {
     canonical: siteUrl,
@@ -50,9 +62,9 @@ export const metadata: Metadata = {
     },
   },
   openGraph: {
-    title: "DAHAB - Bijoux Elegants pour la Femme Marocaine",
+    title: "DAHAB | Bijoux en Ligne au Maroc - Bagues, Colliers, Bracelets",
     description:
-      "Bijoux elegants et accessibles de 99 a 299 MAD. Livraison partout au Maroc. Paiement a la livraison.",
+      "Bijouterie en ligne au Maroc. Bijoux \u00e9l\u00e9gants et accessibles de 99 \u00e0 299 MAD. Livraison partout au Maroc. Paiement \u00e0 la livraison.",
     siteName: "DAHAB Bijoux",
     locale: "fr_MA",
     type: "website",
@@ -62,16 +74,19 @@ export const metadata: Metadata = {
         url: `${siteUrl}/og-image.jpg`,
         width: 1200,
         height: 630,
-        alt: "DAHAB - Bijoux Elegants pour la Femme Marocaine",
+        alt: "DAHAB - Bijouterie en Ligne au Maroc | Bagues, Colliers, Bracelets & Boucles d'Oreilles",
+        type: "image/jpeg",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "DAHAB - Bijoux Elegants pour la Femme Marocaine",
+    title: "DAHAB | Bijoux en Ligne au Maroc",
     description:
-      "Bijoux elegants et accessibles de 99 a 299 MAD. Livraison partout au Maroc.",
+      "Bijouterie en ligne au Maroc. Bijoux \u00e9l\u00e9gants de 99 \u00e0 299 MAD. Livraison partout au Maroc. Paiement \u00e0 la livraison.",
     images: [`${siteUrl}/og-image.jpg`],
+    site: "@dahab_bijoux",
+    creator: "@dahab_bijoux",
   },
   robots: {
     index: true,
@@ -84,11 +99,18 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
+  },
+  category: "ecommerce",
   other: {
     "geo.region": "MA",
-    "geo.placename": "Casablanca",
+    "geo.placename": "Casablanca, Maroc",
     "geo.position": "33.5731;-7.5898",
     ICBM: "33.5731, -7.5898",
+    "content-language": "fr-MA",
+    "dc.language": "fr-MA",
+    "dc.coverage": "Maroc",
   },
 };
 
@@ -99,16 +121,18 @@ const organizationJsonLd = {
   url: siteUrl,
   logo: `${siteUrl}/logo.png`,
   description:
-    "Bijouterie en ligne au Maroc. Bijoux elegants et accessibles pour la femme marocaine.",
+    "Bijouterie en ligne au Maroc. Bijoux \u00e9l\u00e9gants et accessibles pour la femme marocaine. Bagues, colliers, bracelets et boucles d'oreilles de 99 \u00e0 299 MAD.",
   address: {
     "@type": "PostalAddress",
     addressLocality: "Casablanca",
+    addressRegion: "Casablanca-Settat",
     addressCountry: "MA",
   },
   contactPoint: {
     "@type": "ContactPoint",
     contactType: "customer service",
     availableLanguage: ["French", "Arabic"],
+    areaServed: "MA",
   },
   sameAs: [],
 };
@@ -118,10 +142,41 @@ const websiteJsonLd = {
   "@type": "WebSite",
   name: "DAHAB Bijoux",
   url: siteUrl,
+  description:
+    "Bijouterie en ligne au Maroc. Bagues, colliers, bracelets et boucles d'oreilles \u00e9l\u00e9gants.",
+  inLanguage: "fr-MA",
   potentialAction: {
     "@type": "SearchAction",
     target: `${siteUrl}/boutique?q={search_term_string}`,
     "query-input": "required name=search_term_string",
+  },
+};
+
+const localBusinessJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Store",
+  name: "DAHAB Bijoux",
+  url: siteUrl,
+  image: `${siteUrl}/og-image.jpg`,
+  description:
+    "Bijouterie en ligne au Maroc. Bijoux \u00e9l\u00e9gants pour la femme marocaine.",
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "Casablanca",
+    addressRegion: "Casablanca-Settat",
+    addressCountry: "MA",
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: "33.5731",
+    longitude: "-7.5898",
+  },
+  priceRange: "99 MAD - 299 MAD",
+  currenciesAccepted: "MAD",
+  paymentAccepted: "Cash on Delivery",
+  areaServed: {
+    "@type": "Country",
+    name: "Morocco",
   },
 };
 
@@ -134,6 +189,7 @@ export default function RootLayout({
     <html lang="fr" className={`${playfair.variable} ${inter.variable}`}>
       <head>
         <link rel="alternate" hrefLang="fr-MA" href={siteUrl} />
+        <link rel="alternate" hrefLang="x-default" href={siteUrl} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -144,6 +200,12 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(websiteJsonLd),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(localBusinessJsonLd),
           }}
         />
       </head>

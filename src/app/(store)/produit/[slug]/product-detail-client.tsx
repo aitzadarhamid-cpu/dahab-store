@@ -9,6 +9,7 @@ import { useToast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { StockBadge } from "@/components/marketing/stock-badge";
 import { ProductCard } from "@/components/store/product-card";
+import { WhatsAppOrderButton } from "@/components/store/whatsapp-order-button";
 import {
   formatPrice,
   getCategoryLabel,
@@ -97,29 +98,6 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
 
   return (
     <div className="container-page py-8">
-      {/* Product JSON-LD */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Product",
-            name: product.name,
-            description: product.description,
-            image: images,
-            offers: {
-              "@type": "Offer",
-              priceCurrency: "MAD",
-              price: product.price,
-              availability:
-                product.stock > 0
-                  ? "https://schema.org/InStock"
-                  : "https://schema.org/OutOfStock",
-            },
-          }),
-        }}
-      />
-
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
         {/* Image Gallery */}
         <motion.div
@@ -264,6 +242,16 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
                 ? "Rupture de stock"
                 : "Ajouter au panier"}
             </Button>
+
+            {/* WhatsApp Order Button */}
+            {product.stock > 0 && (
+              <WhatsAppOrderButton
+                productName={product.name}
+                productPrice={product.price}
+                selectedSize={selectedSize || undefined}
+                quantity={quantity}
+              />
+            )}
 
             {/* Trust */}
             <div className="flex flex-col gap-3 pt-4 border-t">
