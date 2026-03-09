@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ShoppingBag, Minus, Plus, Truck, Shield } from "lucide-react";
+import { ShoppingBag, Minus, Plus, Truck, Shield, Ruler } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { StockBadge } from "@/components/marketing/stock-badge";
 import { ProductCard } from "@/components/store/product-card";
+import { ProductReviews } from "@/components/store/reviews";
+import { SizeGuide } from "@/components/store/size-guide";
 import { WhatsAppOrderButton } from "@/components/store/whatsapp-order-button";
 import {
   formatPrice,
@@ -44,6 +46,7 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string>(sizes[0] || "");
   const [quantity, setQuantity] = useState(1);
+  const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
 
   const discount = product.compareAtPrice
     ? Math.round(
@@ -183,14 +186,28 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
             {/* Size Selector */}
             {sizes.length > 0 && (
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">
-                  Taille
-                </p>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-medium text-gray-700">
+                    Taille
+                  </p>
+                  {(product.category === "BAGUE" || product.category === "BRACELET" || product.category === "COLLIER") && (
+                    <button
+                      type="button"
+                      onClick={() => setSizeGuideOpen(true)}
+                      className="inline-flex items-center gap-1 text-xs text-brand-gold hover:text-brand-gold-dark font-medium transition-colors"
+                    >
+                      <Ruler size={12} aria-hidden="true" />
+                      Guide des tailles
+                    </button>
+                  )}
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {sizes.map((size) => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
+                      aria-label={`Taille ${size}`}
+                      aria-pressed={selectedSize === size}
                       className={`px-4 py-2 border rounded-lg text-sm font-medium transition-colors ${
                         selectedSize === size
                           ? "border-brand-gold bg-brand-gold text-white"
@@ -213,10 +230,11 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="w-10 h-10 flex items-center justify-center border rounded-lg hover:bg-gray-100 transition-colors"
+                  aria-label="Diminuer la quantite"
                 >
-                  <Minus size={16} />
+                  <Minus size={16} aria-hidden="true" />
                 </button>
-                <span className="font-medium text-lg w-8 text-center">
+                <span className="font-medium text-lg w-8 text-center" aria-live="polite">
                   {quantity}
                 </span>
                 <button
@@ -224,8 +242,9 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
                     setQuantity(Math.min(product.stock, quantity + 1))
                   }
                   className="w-10 h-10 flex items-center justify-center border rounded-lg hover:bg-gray-100 transition-colors"
+                  aria-label="Augmenter la quantite"
                 >
-                  <Plus size={16} />
+                  <Plus size={16} aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -268,6 +287,9 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
         </motion.div>
       </div>
 
+      {/* Reviews */}
+      <ProductReviews productId={product.id} />
+
       {/* Related Products */}
       {relatedProducts.length > 0 && (
         <section className="mt-16">
@@ -279,6 +301,19 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
           </div>
         </section>
       )}
+
+      {/* Size Guide Modal */}
+      <SizeGuide
+        isOpen={sizeGuideOpen}
+        onClose={() => setSizeGuideOpen(false)}
+        defaultTab={
+          product.category === "COLLIER"
+            ? "collier"
+            : product.category === "BRACELET"
+            ? "bracelet"
+            : "bague"
+        }
+      />
     </div>
   );
 }

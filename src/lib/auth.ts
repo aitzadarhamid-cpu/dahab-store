@@ -70,3 +70,25 @@ export async function getAuthAdmin(): Promise<{
   if (!token) return null;
   return verifyToken(token);
 }
+
+/**
+ * Verify admin auth for API routes. Returns null if authenticated,
+ * or a NextResponse 401 error if not.
+ */
+export async function requireAdmin(): Promise<{
+  admin: { email: string; id: string } | null;
+  error: Response | null;
+}> {
+  const { NextResponse } = await import("next/server");
+  const admin = await getAuthAdmin();
+  if (!admin) {
+    return {
+      admin: null,
+      error: NextResponse.json(
+        { error: "Non autorise" },
+        { status: 401 }
+      ),
+    };
+  }
+  return { admin, error: null };
+}

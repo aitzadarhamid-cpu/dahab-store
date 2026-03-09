@@ -63,20 +63,23 @@ export function Header() {
               <Link
                 href="/favoris"
                 className="hidden md:flex relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Mes favoris"
               >
-                <Heart size={20} className="text-brand-black" />
+                <Heart size={20} className="text-brand-black" aria-hidden="true" />
               </Link>
               <Link
                 href="/mes-commandes"
                 className="hidden md:flex relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Mes commandes"
               >
-                <Package size={20} className="text-brand-black" />
+                <Package size={20} className="text-brand-black" aria-hidden="true" />
               </Link>
               <button
                 onClick={() => setCartOpen(true)}
                 className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label={`Panier${itemCount > 0 ? ` (${itemCount} articles)` : ""}`}
               >
-                <ShoppingBag size={22} className="text-brand-black" />
+                <ShoppingBag size={22} className="text-brand-black" aria-hidden="true" />
                 {itemCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-brand-gold text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
                     {itemCount}
@@ -87,8 +90,10 @@ export function Header() {
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label={mobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                aria-expanded={mobileMenuOpen}
               >
-                {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+                {mobileMenuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
               </button>
             </div>
           </div>

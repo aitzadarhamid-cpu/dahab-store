@@ -64,28 +64,72 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Informations */}
           <div>
             <h4 className="font-display font-bold text-brand-gold mb-4">
-              Contact
+              Informations
             </h4>
             <ul className="space-y-2">
-              <li className="text-gray-400 text-sm">WhatsApp: +212 6 00 00 00 00</li>
-              <li className="text-gray-400 text-sm">Email: contact@dahab.ma</li>
-              <li className="text-gray-400 text-sm">
-                Livraison: 2-5 jours ouvrables
+              <li>
+                <Link
+                  href="/a-propos"
+                  className="text-gray-400 hover:text-white text-sm transition-colors"
+                >
+                  A propos
+                </Link>
               </li>
-              <li className="text-gray-400 text-sm">
-                Paiement a la livraison (COD)
+              <li>
+                <Link
+                  href="/faq"
+                  className="text-gray-400 hover:text-white text-sm transition-colors"
+                >
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/politique-retour"
+                  className="text-gray-400 hover:text-white text-sm transition-colors"
+                >
+                  Retours &amp; &Eacute;changes
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/mes-commandes"
+                  className="text-gray-400 hover:text-white text-sm transition-colors"
+                >
+                  Suivre ma commande
+                </Link>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-10 pt-6 text-center">
+        <div className="border-t border-gray-800 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-gray-500 text-sm">
             &copy; {new Date().getFullYear()} DAHAB. Tous droits reserves.
           </p>
+          <div className="flex gap-4">
+            <Link
+              href="/conditions-generales"
+              className="text-gray-500 hover:text-gray-300 text-xs transition-colors"
+            >
+              CGV
+            </Link>
+            <Link
+              href="/politique-confidentialite"
+              className="text-gray-500 hover:text-gray-300 text-xs transition-colors"
+            >
+              Confidentialit&eacute;
+            </Link>
+            <Link
+              href="/politique-retour"
+              className="text-gray-500 hover:text-gray-300 text-xs transition-colors"
+            >
+              Retours
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

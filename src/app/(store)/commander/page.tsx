@@ -261,6 +261,7 @@ function PromoCodeInput({
                 }}
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), validatePromo())}
                 placeholder="Entrez votre code"
+                aria-label="Code promotionnel"
                 className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold uppercase"
               />
               <Button

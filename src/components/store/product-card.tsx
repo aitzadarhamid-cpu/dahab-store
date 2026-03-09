@@ -89,9 +89,9 @@ export function ProductCard({ product }: ProductCardProps) {
           onClick={handleQuickAdd}
           disabled={product.stock <= 0}
           className="absolute bottom-3 right-3 bg-brand-gold text-white p-2.5 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-brand-gold-dark disabled:opacity-50 shadow-lg"
-          title="Ajouter au panier"
+          aria-label={`Ajouter ${product.name} au panier`}
         >
-          <ShoppingBag size={18} />
+          <ShoppingBag size={18} aria-hidden="true" />
         </button>
       </div>
       <h3 className="font-medium text-sm md:text-base text-brand-black group-hover:text-brand-gold transition-colors line-clamp-1">

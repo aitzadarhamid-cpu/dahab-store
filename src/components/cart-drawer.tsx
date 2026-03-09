@@ -62,8 +62,9 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               <button
                 onClick={onClose}
                 className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Fermer le panier"
               >
-                <X size={20} />
+                <X size={20} aria-hidden="true" />
               </button>
             </div>
 

@@ -72,9 +72,6 @@ export async function POST(request: NextRequest) {
       recentEvents.shift();
     }
 
-    // Log for server-side monitoring
-    console.log(`[WhatsApp Event] ${eventRecord.event}`, eventRecord);
-
     return NextResponse.json({ success: true, event: eventRecord.event });
   } catch {
     return NextResponse.json(
