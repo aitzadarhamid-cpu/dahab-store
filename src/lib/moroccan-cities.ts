@@ -79,6 +79,9 @@ export function getDeliveryEstimate(cityName: string): string {
 
 import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from "./utils";
 
+// Re-export for convenience
+export { FREE_SHIPPING_THRESHOLD, SHIPPING_COST };
+
 export function getShippingInfo(subtotal: number): {
   cost: number;
   isFree: boolean;

@@ -8,6 +8,12 @@ const JWT_SECRET = new TextEncoder().encode(
 
 const COOKIE_NAME = "dahab-admin-token";
 
+export interface AdminTokenPayload {
+  email: string;
+  id: string;
+  mustResetPassword?: boolean;
+}
+
 export async function hashPassword(password: string): Promise<string> {
   return hash(password, 12);
 }
@@ -19,11 +25,8 @@ export async function verifyPassword(
   return compare(password, hashedPassword);
 }
 
-export async function signToken(payload: {
-  email: string;
-  id: string;
-}): Promise<string> {
-  return new SignJWT(payload)
+export async function signToken(payload: AdminTokenPayload): Promise<string> {
+  return new SignJWT(payload as unknown as Record<string, unknown>)
     .setProtectedHeader({ alg: "HS256" })
     .setExpirationTime("7d")
     .setIssuedAt()
@@ -32,10 +35,10 @@ export async function signToken(payload: {
 
 export async function verifyToken(
   token: string
-): Promise<{ email: string; id: string } | null> {
+): Promise<AdminTokenPayload | null> {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET);
-    return payload as unknown as { email: string; id: string };
+    return payload as unknown as AdminTokenPayload;
   } catch {
     return null;
   }
@@ -62,10 +65,7 @@ export async function removeAuthCookie() {
   cookieStore.delete(COOKIE_NAME);
 }
 
-export async function getAuthAdmin(): Promise<{
-  email: string;
-  id: string;
-} | null> {
+export async function getAuthAdmin(): Promise<AdminTokenPayload | null> {
   const token = await getAuthCookie();
   if (!token) return null;
   return verifyToken(token);
@@ -76,7 +76,7 @@ export async function getAuthAdmin(): Promise<{
  * or a NextResponse 401 error if not.
  */
 export async function requireAdmin(): Promise<{
-  admin: { email: string; id: string } | null;
+  admin: AdminTokenPayload | null;
   error: Response | null;
 }> {
   const { NextResponse } = await import("next/server");

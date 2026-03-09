@@ -22,10 +22,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const token = await signToken({ email: admin.email, id: admin.id });
+    const token = await signToken({
+      email: admin.email,
+      id: admin.id,
+      mustResetPassword: admin.mustResetPassword,
+    });
     await setAuthCookie(token);
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({
+      success: true,
+      mustResetPassword: admin.mustResetPassword,
+    });
   } catch (error) {
     console.error("Login error:", error);
     return NextResponse.json(

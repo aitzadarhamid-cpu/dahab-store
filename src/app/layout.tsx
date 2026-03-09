@@ -189,6 +189,8 @@ export default function RootLayout({
     <html lang="fr" className={`${playfair.variable} ${inter.variable}`}>
       <head>
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="icon" href="/favicon.png" type="image/png" sizes="32x32" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="alternate" hrefLang="fr-MA" href={siteUrl} />
         <link rel="alternate" hrefLang="x-default" href={siteUrl} />
         <script
