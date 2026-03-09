@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ShoppingBag, Minus, Plus, Truck, Shield, Ruler } from "lucide-react";
+import { ShoppingBag, Minus, Plus, Truck, Shield, Ruler, ZoomIn } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,8 @@ import { ProductCard } from "@/components/store/product-card";
 import { ProductReviews } from "@/components/store/reviews";
 import { SizeGuide } from "@/components/store/size-guide";
 import { WhatsAppOrderButton } from "@/components/store/whatsapp-order-button";
+import { StickyAddToCart } from "@/components/store/sticky-add-to-cart";
+import { ImageLightbox } from "@/components/store/image-lightbox";
 import {
   formatPrice,
   getCategoryLabel,
@@ -47,6 +49,8 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
   const [selectedSize, setSelectedSize] = useState<string>(sizes[0] || "");
   const [quantity, setQuantity] = useState(1);
   const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const addToCartRef = useRef<HTMLButtonElement>(null);
 
   const discount = product.compareAtPrice
     ? Math.round(
@@ -65,7 +69,7 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
     });
   }, [product]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = useCallback(() => {
     if (product.stock <= 0) return;
     if (sizes.length > 0 && !selectedSize) {
       showToast("Veuillez selectionner une taille", "error");
@@ -97,7 +101,7 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
     });
 
     showToast(`${product.name} ajoute au panier`);
-  };
+  }, [product, images, quantity, selectedSize, sizes.length, addItem, showToast]);
 
   return (
     <div className="container-page py-8">
@@ -107,12 +111,15 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          <div className="relative aspect-square rounded-2xl overflow-hidden bg-white mb-4">
+          <div
+            className="relative aspect-square rounded-2xl overflow-hidden bg-white mb-4 cursor-zoom-in group"
+            onClick={() => setLightboxOpen(true)}
+          >
             <Image
               src={images[selectedImage] || "/placeholder.jpg"}
               alt={product.name}
               fill
-              className="object-cover"
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
               sizes="(max-width: 768px) 100vw, 50vw"
               priority
             />
@@ -121,14 +128,18 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
                 -{discount}%
               </span>
             )}
+            {/* Zoom hint */}
+            <div className="absolute bottom-4 right-4 bg-black/50 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <ZoomIn size={18} aria-hidden="true" />
+            </div>
           </div>
           {images.length > 1 && (
-            <div className="flex gap-3">
+            <div className="flex gap-3 overflow-x-auto pb-1">
               {images.map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setSelectedImage(i)}
-                  className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
+                  className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors flex-shrink-0 ${
                     selectedImage === i
                       ? "border-brand-gold"
                       : "border-transparent"
@@ -251,6 +262,7 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
 
             {/* Add to Cart */}
             <Button
+              ref={addToCartRef}
               onClick={handleAddToCart}
               size="lg"
               className="w-full gap-2"
@@ -301,6 +313,25 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
           </div>
         </section>
       )}
+
+      {/* Sticky Add to Cart — mobile only */}
+      <StickyAddToCart
+        productName={product.name}
+        price={product.price}
+        compareAtPrice={product.compareAtPrice}
+        stock={product.stock}
+        onAddToCart={handleAddToCart}
+        targetRef={addToCartRef}
+      />
+
+      {/* Image Lightbox */}
+      <ImageLightbox
+        images={images}
+        initialIndex={selectedImage}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        alt={product.name}
+      />
 
       {/* Size Guide Modal */}
       <SizeGuide

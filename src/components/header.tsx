@@ -1,15 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { ShoppingBag, Menu, X, Heart, Package } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ShoppingBag, Menu, X, Heart, Package, Search } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { CartDrawer } from "./cart-drawer";
+import { SearchModal } from "./store/search-modal";
 
 export function Header() {
   const { itemCount } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  // Keyboard shortcut: Ctrl/Cmd + K to open search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <>
@@ -60,6 +74,15 @@ export function Header() {
 
             {/* Actions */}
             <div className="flex items-center gap-1 md:gap-2">
+              {/* Search button */}
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Rechercher"
+              >
+                <Search size={20} className="text-brand-black" aria-hidden="true" />
+              </button>
+
               <Link
                 href="/favoris"
                 className="hidden md:flex relative p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -151,6 +174,7 @@ export function Header() {
       </header>
 
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 }

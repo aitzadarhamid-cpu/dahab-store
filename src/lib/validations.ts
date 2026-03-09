@@ -12,6 +12,9 @@ export const orderFormSchema = z.object({
     .string()
     .min(5, "L'adresse doit contenir au moins 5 caracteres"),
   customerNote: z.string().optional(),
+  acceptTerms: z.literal(true, {
+    errorMap: () => ({ message: "Vous devez accepter les conditions generales de vente" }),
+  }),
 });
 
 export type OrderFormValues = z.infer<typeof orderFormSchema>;

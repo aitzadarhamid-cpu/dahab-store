@@ -18,6 +18,8 @@ interface ProductCardProps {
     images: string;
     category: string;
     stock: number;
+    featured?: boolean;
+    createdAt?: string | Date;
   };
 }
 
@@ -26,12 +28,19 @@ export function ProductCard({ product }: ProductCardProps) {
   const { showToast } = useToast();
   const images: string[] = JSON.parse(product.images);
   const mainImage = images[0] || "/placeholder.jpg";
+  const secondImage = images[1] || null;
   const discount = product.compareAtPrice
     ? Math.round(
         ((product.compareAtPrice - product.price) / product.compareAtPrice) *
           100
       )
     : 0;
+
+  // Check if product is "new" (created within last 14 days)
+  const isNew = product.createdAt
+    ? Date.now() - new Date(product.createdAt).getTime() <
+      14 * 24 * 60 * 60 * 1000
+    : false;
 
   const handleQuickAdd = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -68,23 +77,57 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <Link href={`/produit/${product.slug}`} className="group block">
       <div className="relative aspect-square rounded-xl overflow-hidden bg-white mb-3">
+        {/* Primary image */}
         <Image
           src={mainImage}
           alt={product.name}
           fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
+          className={`object-cover transition-all duration-500 ${
+            secondImage
+              ? "group-hover:opacity-0"
+              : "group-hover:scale-105"
+          }`}
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
-        {discount > 0 && (
-          <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-            -{discount}%
-          </span>
+
+        {/* Secondary image — hover swap (desktop only) */}
+        {secondImage && (
+          <Image
+            src={secondImage}
+            alt={`${product.name} - vue 2`}
+            fill
+            className="object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          />
         )}
+
+        {/* Badges — top left */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+          {discount > 0 && (
+            <span className="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+              -{discount}%
+            </span>
+          )}
+          {isNew && discount === 0 && (
+            <span className="bg-brand-gold text-white text-xs font-bold px-2 py-1 rounded-full">
+              Nouveau
+            </span>
+          )}
+          {product.featured && !isNew && discount === 0 && (
+            <span className="bg-brand-black text-white text-xs font-bold px-2 py-1 rounded-full">
+              Bestseller
+            </span>
+          )}
+        </div>
+
+        {/* Low stock badge — top right */}
         {product.stock <= 3 && product.stock > 0 && (
           <span className="absolute top-3 right-3 bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded-full">
             Derniers!
           </span>
         )}
+
+        {/* Quick add button */}
         <button
           onClick={handleQuickAdd}
           disabled={product.stock <= 0}

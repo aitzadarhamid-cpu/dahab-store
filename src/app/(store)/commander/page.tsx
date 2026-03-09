@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/hooks/useCart";
 import { Button } from "@/components/ui/button";
@@ -580,6 +581,47 @@ export default function CheckoutPage() {
                 </div>
                 <Package size={20} className="text-brand-gold ml-auto" />
               </div>
+            </motion.div>
+
+            {/* Terms & Conditions */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.15 }}
+              className="bg-white rounded-xl p-5 md:p-6 shadow-sm"
+            >
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  {...register("acceptTerms")}
+                  className="mt-0.5 w-4 h-4 rounded border-gray-300 text-brand-gold focus:ring-brand-gold cursor-pointer accent-brand-gold"
+                />
+                <span className="text-sm text-gray-600 leading-relaxed group-hover:text-gray-800 transition-colors">
+                  J&apos;accepte les{" "}
+                  <Link
+                    href="/conditions-generales"
+                    target="_blank"
+                    className="text-brand-gold hover:underline font-medium"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    conditions generales de vente
+                  </Link>{" "}
+                  et la{" "}
+                  <Link
+                    href="/politique-retour"
+                    target="_blank"
+                    className="text-brand-gold hover:underline font-medium"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    politique de retour
+                  </Link>
+                </span>
+              </label>
+              {errors.acceptTerms && (
+                <p className="text-sm text-red-600 mt-2 ml-7">
+                  {errors.acceptTerms.message}
+                </p>
+              )}
             </motion.div>
 
             {error && (
