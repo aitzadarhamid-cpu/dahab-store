@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { ShoppingBag, Menu, X } from "lucide-react";
+import { ShoppingBag, Menu, X, Heart, Package } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { CartDrawer } from "./cart-drawer";
 
@@ -50,10 +50,28 @@ export function Header() {
               >
                 Colliers
               </Link>
+              <Link
+                href="/mes-commandes"
+                className="text-sm font-medium text-gray-700 hover:text-brand-gold transition-colors"
+              >
+                Mes commandes
+              </Link>
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 md:gap-2">
+              <Link
+                href="/favoris"
+                className="hidden md:flex relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <Heart size={20} className="text-brand-black" />
+              </Link>
+              <Link
+                href="/mes-commandes"
+                className="hidden md:flex relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+              >
+                <Package size={20} className="text-brand-black" />
+              </Link>
               <button
                 onClick={() => setCartOpen(true)}
                 className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -106,6 +124,20 @@ export function Header() {
                   className="text-sm font-medium text-gray-700 hover:text-brand-gold px-2 py-1"
                 >
                   Colliers
+                </Link>
+                <Link
+                  href="/mes-commandes"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-sm font-medium text-gray-700 hover:text-brand-gold px-2 py-1"
+                >
+                  Mes commandes
+                </Link>
+                <Link
+                  href="/favoris"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-sm font-medium text-gray-700 hover:text-brand-gold px-2 py-1"
+                >
+                  Favoris
                 </Link>
               </div>
             </nav>

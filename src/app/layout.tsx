@@ -188,6 +188,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${playfair.variable} ${inter.variable}`}>
       <head>
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link rel="alternate" hrefLang="fr-MA" href={siteUrl} />
         <link rel="alternate" hrefLang="x-default" href={siteUrl} />
         <script

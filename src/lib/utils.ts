@@ -36,8 +36,11 @@ export function slugify(text: string): string {
     .replace(/(^-|-$)+/g, "");
 }
 
+export const FREE_SHIPPING_THRESHOLD = 299;
+export const SHIPPING_COST = 29;
+
 export function getShippingCost(subtotal: number): number {
-  return subtotal >= 199 ? 0 : 29;
+  return subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
 }
 
 export function getCategoryLabel(category: string): string {

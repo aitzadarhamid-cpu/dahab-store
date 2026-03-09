@@ -257,7 +257,7 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
             <div className="flex flex-col gap-3 pt-4 border-t">
               <div className="flex items-center gap-3 text-sm text-gray-600">
                 <Truck size={18} className="text-brand-gold" />
-                Livraison gratuite a partir de 199 MAD
+                Livraison gratuite a partir de 299 MAD
               </div>
               <div className="flex items-center gap-3 text-sm text-gray-600">
                 <Shield size={18} className="text-brand-gold" />

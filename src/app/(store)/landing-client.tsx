@@ -140,7 +140,7 @@ export function LandingClient({ products }: { products: Product[] }) {
           className="absolute right-0 top-0 w-full md:w-3/5 h-[120%] -top-[10%] hidden md:block"
         >
           <Image
-            src="https://images.unsplash.com/photo-1515562141589-67f0d569b34e?w=1200&h=800&fit=crop"
+            src="https://images.unsplash.com/photo-1617038260897-41a1f14a8ca0?w=1200&h=800&fit=crop"
             alt="Bijoux DAHAB"
             fill
             className="object-cover"
@@ -166,7 +166,7 @@ export function LandingClient({ products }: { products: Product[] }) {
               transition={{ duration: 0.7, delay: 0.2 }}
               className="text-brand-gold font-medium tracking-[0.3em] uppercase text-xs md:text-sm mb-6"
             >
-              Nouvelle Collection 2024
+              Nouvelle Collection 2025
             </motion.p>
 
             <motion.h1

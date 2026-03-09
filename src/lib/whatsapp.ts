@@ -119,6 +119,39 @@ export function getOrderShareMessage(order: {
 }
 
 // =============================================================================
+// Order Status Update Templates (WhatsApp to customer)
+// =============================================================================
+
+const STATUS_TEMPLATES: Record<string, (order: { orderNumber: string; customerName: string }) => string> = {
+  CONFIRMEE: (o) =>
+    `Bonjour ${o.customerName}! Votre commande #${o.orderNumber} est confirmee. Nous preparons votre colis avec soin. Merci pour votre confiance! - DAHAB`,
+  EN_PREPARATION: (o) =>
+    `Bonjour ${o.customerName}! Bonne nouvelle, votre commande #${o.orderNumber} est en cours de preparation. Vous recevrez bientot votre colis! - DAHAB`,
+  EXPEDIEE: (o) =>
+    `Bonjour ${o.customerName}! Votre commande #${o.orderNumber} vient d'etre expediee! Vous la recevrez dans les prochaines 24-72h. - DAHAB`,
+  LIVREE: (o) =>
+    `Bonjour ${o.customerName}! Votre commande #${o.orderNumber} a ete livree. Nous esperons que vos bijoux vous plairont! N'hesitez pas a nous laisser un avis. - DAHAB`,
+  ANNULEE: (o) =>
+    `Bonjour ${o.customerName}, votre commande #${o.orderNumber} a ete annulee. Si vous avez des questions, contactez-nous. - DAHAB`,
+};
+
+/**
+ * Get a WhatsApp link for sending an order status update to a customer.
+ */
+export function getStatusUpdateWhatsAppLink(order: {
+  orderNumber: string;
+  customerName: string;
+  customerPhone: string;
+  status: string;
+}): string | null {
+  const template = STATUS_TEMPLATES[order.status];
+  if (!template) return null;
+  const message = template({ orderNumber: order.orderNumber, customerName: order.customerName });
+  const phone = cleanPhone(order.customerPhone);
+  return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+}
+
+// =============================================================================
 // Server-side notification (for API routes)
 // =============================================================================
 

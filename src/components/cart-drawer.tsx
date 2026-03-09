@@ -171,7 +171,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 </div>
                 {shipping > 0 && (
                   <p className="text-xs text-gray-400">
-                    Livraison gratuite a partir de 199 MAD
+                    Livraison gratuite a partir de 299 MAD
                   </p>
                 )}
                 <div className="flex justify-between font-display text-lg font-bold pt-2 border-t">

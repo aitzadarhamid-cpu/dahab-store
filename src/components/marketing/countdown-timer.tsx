@@ -1,18 +1,21 @@
 "use client";
 
 import { useCountdown, getEndOfDay } from "@/hooks/useCountdown";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 export function CountdownTimer() {
   const endOfDay = useMemo(() => getEndOfDay(), []);
   const { hours, minutes, seconds, expired } = useCountdown(endOfDay);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   if (expired) return null;
 
   const TimeBlock = ({ value, label }: { value: number; label: string }) => (
     <div className="flex flex-col items-center">
       <div className="bg-brand-black text-brand-gold font-display text-2xl md:text-3xl font-bold w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-lg">
-        {String(value).padStart(2, "0")}
+        {mounted ? String(value).padStart(2, "0") : "--"}
       </div>
       <span className="text-xs text-gray-600 mt-1 uppercase tracking-wide">
         {label}

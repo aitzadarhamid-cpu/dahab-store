@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#1A1A1A"/>
+  <rect x="0" y="0" width="1200" height="4" fill="#C9A84C"/>
+  <rect x="0" y="626" width="1200" height="4" fill="#C9A84C"/>
+  <text x="600" y="260" text-anchor="middle" font-family="'Playfair Display', Georgia, serif" font-size="72" font-weight="700" fill="#FFFFFF" letter-spacing="8">DAHAB</text>
+  <text x="600" y="320" text-anchor="middle" font-family="'Noto Sans Arabic', 'Arial', sans-serif" font-size="40" fill="#C9A84C">دهب</text>
+  <text x="600" y="400" text-anchor="middle" font-family="'Inter', 'Arial', sans-serif" font-size="24" fill="#999999" letter-spacing="6">L'ELEGANCE ACCESSIBLE</text>
+  <text x="600" y="460" text-anchor="middle" font-family="'Inter', 'Arial', sans-serif" font-size="18" fill="#666666">Bijoux raffines pour la femme marocaine moderne</text>
+  <line x1="500" y1="350" x2="700" y2="350" stroke="#C9A84C" stroke-width="1" opacity="0.5"/>
+</svg>
