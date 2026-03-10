@@ -7,7 +7,16 @@ export const metadata: Metadata = {
   title: "Conditions Generales de Vente | DAHAB Bijoux",
   description:
     "Consultez les conditions generales de vente de DAHAB Bijoux. Informations sur les commandes, paiement, livraison et retours.",
+  keywords: ["CGV dahab", "conditions generales vente bijoux maroc", "dahab conditions"],
   alternates: { canonical: `${siteUrl}/conditions-generales` },
+  openGraph: {
+    title: "Conditions Generales de Vente | DAHAB Bijoux",
+    description: "Conditions generales de vente de DAHAB. Commandes, paiement, livraison et retours.",
+    url: `${siteUrl}/conditions-generales`,
+    siteName: "DAHAB Bijoux",
+    locale: "fr_MA",
+    type: "website",
+  },
 };
 
 export default function CGVPage() {

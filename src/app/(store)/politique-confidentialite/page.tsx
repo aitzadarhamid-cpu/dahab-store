@@ -7,7 +7,16 @@ export const metadata: Metadata = {
   title: "Politique de Confidentialite | DAHAB Bijoux",
   description:
     "Decouvrez comment DAHAB protege vos donnees personnelles. Politique de confidentialite et protection des donnees.",
+  keywords: ["confidentialite dahab", "protection donnees bijoux maroc", "RGPD maroc"],
   alternates: { canonical: `${siteUrl}/politique-confidentialite` },
+  openGraph: {
+    title: "Politique de Confidentialite | DAHAB Bijoux",
+    description: "Comment DAHAB protege vos donnees personnelles. Loi 09-08 Maroc.",
+    url: `${siteUrl}/politique-confidentialite`,
+    siteName: "DAHAB Bijoux",
+    locale: "fr_MA",
+    type: "website",
+  },
 };
 
 export default function PolitiqueConfidentialitePage() {

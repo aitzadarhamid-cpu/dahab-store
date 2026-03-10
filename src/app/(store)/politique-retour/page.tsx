@@ -8,7 +8,16 @@ export const metadata: Metadata = {
   title: "Politique de Retour et Echange | DAHAB Bijoux",
   description:
     "Decouvrez la politique de retour et d'echange de DAHAB. Retours sous 7 jours, echanges gratuits. Service client reactif via WhatsApp.",
+  keywords: ["retour dahab", "politique retour bijoux maroc", "echange dahab"],
   alternates: { canonical: `${siteUrl}/politique-retour` },
+  openGraph: {
+    title: "Politique de Retour et Echange | DAHAB Bijoux",
+    description: "Retours sous 7 jours, echanges gratuits. Service client reactif via WhatsApp.",
+    url: `${siteUrl}/politique-retour`,
+    siteName: "DAHAB Bijoux",
+    locale: "fr_MA",
+    type: "website",
+  },
 };
 
 export default function PolitiqueRetourPage() {
