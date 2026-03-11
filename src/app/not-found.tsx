@@ -44,7 +44,7 @@ export default function NotFound() {
               { label: "Bagues", href: "/boutique?category=BAGUE" },
               { label: "Colliers", href: "/boutique?category=COLLIER" },
               { label: "Bracelets", href: "/boutique?category=BRACELET" },
-              { label: "Boucles d'oreilles", href: "/boutique?category=BOUCLE_OREILLE" },
+              { label: "Boucles d'oreilles", href: "/boutique?category=BOUCLES_OREILLES" },
             ].map((cat) => (
               <Link
                 key={cat.href}

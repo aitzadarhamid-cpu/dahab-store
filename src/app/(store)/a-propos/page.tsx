@@ -36,7 +36,7 @@ export default function AProposPage() {
     "@type": "Organization",
     name: "DAHAB Bijoux",
     url: siteUrl,
-    logo: `${siteUrl}/logo.png`,
+    logo: `${siteUrl}/logo.svg`,
     description:
       "Bijouterie en ligne au Maroc. Bijoux \u00e9l\u00e9gants et accessibles pour la femme marocaine. Bagues, colliers, bracelets et boucles d'oreilles de 99 \u00e0 299 MAD.",
     foundingDate: "2024",
