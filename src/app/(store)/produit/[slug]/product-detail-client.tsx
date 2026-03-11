@@ -38,9 +38,10 @@ interface Product {
 interface Props {
   product: Product;
   relatedProducts: Product[];
+  complementProducts: Product[];
 }
 
-export function ProductDetailClient({ product, relatedProducts }: Props) {
+export function ProductDetailClient({ product, relatedProducts, complementProducts }: Props) {
   const { addItem } = useCart();
   const { showToast } = useToast();
   const images: string[] = JSON.parse(product.images);
@@ -301,6 +302,18 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
 
       {/* Reviews */}
       <ProductReviews productId={product.id} />
+
+      {/* Cross-sell: Complétez votre look */}
+      {complementProducts.length > 0 && (
+        <section className="mt-16">
+          <h2 className="section-title mb-6">Completez votre look</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {complementProducts.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (

@@ -9,7 +9,7 @@ import { productFormSchema, type ProductFormValues } from "@/lib/validations";
 import { slugify } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Trash2, Plus, GripVertical } from "lucide-react";
+import { Trash2, Plus } from "lucide-react";
 
 const CATEGORIES = [
   { value: "BAGUE", label: "Bagues" },

@@ -1,0 +1,58 @@
+# ============================================================
+# DAHAB — docker-compose for LOCAL development & testing
+# Mirrors the production HF Spaces container setup.
+#
+# Usage:
+#   docker-compose up --build
+#
+# Prerequisites:
+#   - .env file with all required variables (copy from .env.example)
+#   - Docker Desktop running
+# ============================================================
+
+version: "3.9"
+
+services:
+  dahab:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # NEXT_PUBLIC_* vars are baked at build time.
+        # For local testing, override with localhost URL.
+        # In production, these come from HF Space Build Args.
+        NEXT_PUBLIC_SITE_URL: "http://localhost:7860"
+        NEXT_PUBLIC_META_PIXEL_ID: ""
+        NEXT_PUBLIC_GA_ID: ""
+        NEXT_PUBLIC_WHATSAPP_PHONE: ""
+    image: dahab:local
+    container_name: dahab_app
+    ports:
+      - "7860:7860"
+    # Load all environment variables from .env file
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 7860
+      HOSTNAME: "0.0.0.0"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:7860/api/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s
+
+# No volumes — the container is STATELESS by design.
+# All persistent data lives externally:
+#   - Neon PostgreSQL: DATABASE_URL
+#   - Cloudflare R2:   CLOUDFLARE_R2_*
