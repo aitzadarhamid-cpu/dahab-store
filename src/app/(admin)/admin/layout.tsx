@@ -10,6 +10,7 @@ import {
   Tag,
   Star,
   Mail,
+  Crown,
 } from "lucide-react";
 
 const navItems = [
@@ -19,6 +20,7 @@ const navItems = [
   { href: "/admin/promos", label: "Promos", icon: Tag },
   { href: "/admin/reviews", label: "Avis", icon: Star },
   { href: "/admin/newsletter", label: "Newsletter", icon: Mail },
+  { href: "/admin/marque", label: "Marque", icon: Crown },
 ];
 
 export default function AdminLayout({
@@ -56,7 +58,9 @@ export default function AdminLayout({
               key={item.href}
               href={item.href}
               className={`flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                pathname === item.href
+                (item.href === "/admin"
+                  ? pathname === "/admin"
+                  : pathname.startsWith(item.href))
                   ? "bg-brand-gold text-white"
                   : "text-gray-400 hover:text-white hover:bg-gray-800"
               }`}
@@ -87,7 +91,9 @@ export default function AdminLayout({
               key={item.href}
               href={item.href}
               className={`p-2 rounded-lg ${
-                pathname === item.href
+                (item.href === "/admin"
+                  ? pathname === "/admin"
+                  : pathname.startsWith(item.href))
                   ? "bg-brand-gold"
                   : "hover:bg-gray-800"
               }`}
