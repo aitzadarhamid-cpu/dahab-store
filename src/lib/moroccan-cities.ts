@@ -77,7 +77,10 @@ export function getDeliveryEstimate(cityName: string): string {
   }
 }
 
-export const FREE_SHIPPING_THRESHOLD = 300;
+import { FREE_SHIPPING_THRESHOLD, SHIPPING_COST } from "./utils";
+
+// Re-export for convenience
+export { FREE_SHIPPING_THRESHOLD, SHIPPING_COST };
 
 export function getShippingInfo(subtotal: number): {
   cost: number;
@@ -86,7 +89,7 @@ export function getShippingInfo(subtotal: number): {
 } {
   const isFree = subtotal >= FREE_SHIPPING_THRESHOLD;
   return {
-    cost: isFree ? 0 : 29,
+    cost: isFree ? 0 : SHIPPING_COST,
     isFree,
     remaining: isFree ? 0 : FREE_SHIPPING_THRESHOLD - subtotal,
   };

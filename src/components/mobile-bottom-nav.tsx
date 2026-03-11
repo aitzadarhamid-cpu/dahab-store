@@ -2,13 +2,14 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { Home, Store, Heart, ShoppingBag } from "lucide-react";
+import { Home, Store, Heart, ShoppingBag, Package } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 
 const navItems = [
   { href: "/", icon: Home, label: "Accueil" },
   { href: "/boutique", icon: Store, label: "Boutique" },
   { href: "/favoris", icon: Heart, label: "Favoris" },
+  { href: "/mes-commandes", icon: Package, label: "Commandes" },
   { href: "/commander", icon: ShoppingBag, label: "Panier" },
 ];
 
@@ -30,6 +31,8 @@ export function MobileBottomNav() {
             <Link
               key={item.href}
               href={item.href}
+              aria-label={item.label}
+              aria-current={isActive ? "page" : undefined}
               className={`flex flex-col items-center justify-center gap-0.5 px-3 py-1 relative transition-colors ${
                 isActive
                   ? "text-brand-gold"
@@ -37,7 +40,7 @@ export function MobileBottomNav() {
               }`}
             >
               <div className="relative">
-                <Icon size={22} strokeWidth={isActive ? 2.5 : 1.5} />
+                <Icon size={22} strokeWidth={isActive ? 2.5 : 1.5} aria-hidden="true" />
                 {item.href === "/commander" && itemCount > 0 && (
                   <span className="absolute -top-1.5 -right-2.5 bg-brand-gold text-white text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center">
                     {itemCount > 9 ? "9+" : itemCount}

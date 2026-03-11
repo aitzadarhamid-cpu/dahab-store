@@ -1,15 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ShoppingBag, Minus, Plus, Truck, Shield } from "lucide-react";
+import { ShoppingBag, Minus, Plus, Truck, Shield, Ruler, ZoomIn } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { useToast } from "@/components/ui/toast";
 import { Button } from "@/components/ui/button";
 import { StockBadge } from "@/components/marketing/stock-badge";
 import { ProductCard } from "@/components/store/product-card";
+import { ProductReviews } from "@/components/store/reviews";
+import { SizeGuide } from "@/components/store/size-guide";
 import { WhatsAppOrderButton } from "@/components/store/whatsapp-order-button";
+import { StickyAddToCart } from "@/components/store/sticky-add-to-cart";
+import { ImageLightbox } from "@/components/store/image-lightbox";
 import {
   formatPrice,
   getCategoryLabel,
@@ -44,6 +48,9 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string>(sizes[0] || "");
   const [quantity, setQuantity] = useState(1);
+  const [sizeGuideOpen, setSizeGuideOpen] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const addToCartRef = useRef<HTMLButtonElement>(null);
 
   const discount = product.compareAtPrice
     ? Math.round(
@@ -62,7 +69,7 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
     });
   }, [product]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = useCallback(() => {
     if (product.stock <= 0) return;
     if (sizes.length > 0 && !selectedSize) {
       showToast("Veuillez selectionner une taille", "error");
@@ -94,7 +101,7 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
     });
 
     showToast(`${product.name} ajoute au panier`);
-  };
+  }, [product, images, quantity, selectedSize, sizes.length, addItem, showToast]);
 
   return (
     <div className="container-page py-8">
@@ -104,12 +111,15 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
         >
-          <div className="relative aspect-square rounded-2xl overflow-hidden bg-white mb-4">
+          <div
+            className="relative aspect-square rounded-2xl overflow-hidden bg-white mb-4 cursor-zoom-in group"
+            onClick={() => setLightboxOpen(true)}
+          >
             <Image
               src={images[selectedImage] || "/placeholder.jpg"}
               alt={product.name}
               fill
-              className="object-cover"
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
               sizes="(max-width: 768px) 100vw, 50vw"
               priority
             />
@@ -118,14 +128,18 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
                 -{discount}%
               </span>
             )}
+            {/* Zoom hint */}
+            <div className="absolute bottom-4 right-4 bg-black/50 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              <ZoomIn size={18} aria-hidden="true" />
+            </div>
           </div>
           {images.length > 1 && (
-            <div className="flex gap-3">
+            <div className="flex gap-3 overflow-x-auto pb-1">
               {images.map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setSelectedImage(i)}
-                  className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
+                  className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors flex-shrink-0 ${
                     selectedImage === i
                       ? "border-brand-gold"
                       : "border-transparent"
@@ -183,14 +197,28 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
             {/* Size Selector */}
             {sizes.length > 0 && (
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">
-                  Taille
-                </p>
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-medium text-gray-700">
+                    Taille
+                  </p>
+                  {(product.category === "BAGUE" || product.category === "BRACELET" || product.category === "COLLIER") && (
+                    <button
+                      type="button"
+                      onClick={() => setSizeGuideOpen(true)}
+                      className="inline-flex items-center gap-1 text-xs text-brand-gold hover:text-brand-gold-dark font-medium transition-colors"
+                    >
+                      <Ruler size={12} aria-hidden="true" />
+                      Guide des tailles
+                    </button>
+                  )}
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {sizes.map((size) => (
                     <button
                       key={size}
                       onClick={() => setSelectedSize(size)}
+                      aria-label={`Taille ${size}`}
+                      aria-pressed={selectedSize === size}
                       className={`px-4 py-2 border rounded-lg text-sm font-medium transition-colors ${
                         selectedSize === size
                           ? "border-brand-gold bg-brand-gold text-white"
@@ -213,10 +241,11 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="w-10 h-10 flex items-center justify-center border rounded-lg hover:bg-gray-100 transition-colors"
+                  aria-label="Diminuer la quantite"
                 >
-                  <Minus size={16} />
+                  <Minus size={16} aria-hidden="true" />
                 </button>
-                <span className="font-medium text-lg w-8 text-center">
+                <span className="font-medium text-lg w-8 text-center" aria-live="polite">
                   {quantity}
                 </span>
                 <button
@@ -224,14 +253,16 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
                     setQuantity(Math.min(product.stock, quantity + 1))
                   }
                   className="w-10 h-10 flex items-center justify-center border rounded-lg hover:bg-gray-100 transition-colors"
+                  aria-label="Augmenter la quantite"
                 >
-                  <Plus size={16} />
+                  <Plus size={16} aria-hidden="true" />
                 </button>
               </div>
             </div>
 
             {/* Add to Cart */}
             <Button
+              ref={addToCartRef}
               onClick={handleAddToCart}
               size="lg"
               className="w-full gap-2"
@@ -257,7 +288,7 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
             <div className="flex flex-col gap-3 pt-4 border-t">
               <div className="flex items-center gap-3 text-sm text-gray-600">
                 <Truck size={18} className="text-brand-gold" />
-                Livraison gratuite a partir de 199 MAD
+                Livraison gratuite a partir de 299 MAD
               </div>
               <div className="flex items-center gap-3 text-sm text-gray-600">
                 <Shield size={18} className="text-brand-gold" />
@@ -267,6 +298,9 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
           </div>
         </motion.div>
       </div>
+
+      {/* Reviews */}
+      <ProductReviews productId={product.id} />
 
       {/* Related Products */}
       {relatedProducts.length > 0 && (
@@ -279,6 +313,38 @@ export function ProductDetailClient({ product, relatedProducts }: Props) {
           </div>
         </section>
       )}
+
+      {/* Sticky Add to Cart — mobile only */}
+      <StickyAddToCart
+        productName={product.name}
+        price={product.price}
+        compareAtPrice={product.compareAtPrice}
+        stock={product.stock}
+        onAddToCart={handleAddToCart}
+        targetRef={addToCartRef}
+      />
+
+      {/* Image Lightbox */}
+      <ImageLightbox
+        images={images}
+        initialIndex={selectedImage}
+        isOpen={lightboxOpen}
+        onClose={() => setLightboxOpen(false)}
+        alt={product.name}
+      />
+
+      {/* Size Guide Modal */}
+      <SizeGuide
+        isOpen={sizeGuideOpen}
+        onClose={() => setSizeGuideOpen(false)}
+        defaultTab={
+          product.category === "COLLIER"
+            ? "collier"
+            : product.category === "BRACELET"
+            ? "bracelet"
+            : "bague"
+        }
+      />
     </div>
   );
 }

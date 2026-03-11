@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -8,6 +9,7 @@ import { productFormSchema, type ProductFormValues } from "@/lib/validations";
 import { slugify } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Trash2, Plus, GripVertical } from "lucide-react";
 
 const CATEGORIES = [
   { value: "BAGUE", label: "Bagues" },
@@ -45,6 +47,10 @@ export function ProductForm({ initialData }: Props) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [imageUrls, setImageUrls] = useState<string[]>(
+    initialData ? JSON.parse(initialData.images) : []
+  );
+  const [newImageUrl, setNewImageUrl] = useState("");
   const isEdit = !!initialData;
 
   const {
@@ -87,14 +93,7 @@ export function ProductForm({ initialData }: Props) {
               .filter(Boolean)
           )
         : "[]";
-      const images = data.images
-        ? JSON.stringify(
-            data.images
-              .split("\n")
-              .map((s) => s.trim())
-              .filter(Boolean)
-          )
-        : "[]";
+      const images = JSON.stringify(imageUrls.filter(Boolean));
 
       const body = {
         name: data.name,
@@ -249,15 +248,65 @@ export function ProductForm({ initialData }: Props) {
           {...register("sizes")}
         />
 
-        <div className="space-y-1">
+        <div className="space-y-3">
           <label className="block text-sm font-medium text-gray-700">
-            URLs des images (une par ligne)
+            Images du produit
           </label>
-          <textarea
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold min-h-[80px] text-sm"
-            placeholder="https://images.unsplash.com/..."
-            {...register("images")}
-          />
+
+          {/* Image preview grid */}
+          {imageUrls.length > 0 && (
+            <div className="grid grid-cols-4 gap-3">
+              {imageUrls.map((url, idx) => (
+                <div key={idx} className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200">
+                  <Image src={url} alt={`Image ${idx + 1}`} fill className="object-cover" sizes="120px" />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const updated = imageUrls.filter((_, i) => i !== idx);
+                        setImageUrls(updated);
+                      }}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity bg-red-500 text-white p-1.5 rounded-full"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                  {idx === 0 && (
+                    <span className="absolute top-1 left-1 bg-brand-gold text-white text-[9px] px-1.5 py-0.5 rounded font-bold">
+                      Principal
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Add image URL */}
+          <div className="flex gap-2">
+            <input
+              type="url"
+              value={newImageUrl}
+              onChange={(e) => setNewImageUrl(e.target.value)}
+              placeholder="https://images.unsplash.com/..."
+              className="flex-1 px-4 py-2.5 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-brand-gold focus:border-brand-gold"
+            />
+            <button
+              type="button"
+              onClick={() => {
+                if (newImageUrl.trim()) {
+                  setImageUrls([...imageUrls, newImageUrl.trim()]);
+                  setNewImageUrl("");
+                }
+              }}
+              className="flex items-center gap-1 px-4 py-2.5 bg-brand-gold text-white text-sm font-medium rounded-lg hover:bg-brand-gold/90 transition-colors"
+            >
+              <Plus size={16} /> Ajouter
+            </button>
+          </div>
+          <p className="text-xs text-gray-400">La premiere image sera l&apos;image principale du produit</p>
+
+          {/* Hidden field for form */}
+          <input type="hidden" {...register("images")} value={imageUrls.join("\n")} />
         </div>
 
         <label className="flex items-center gap-3 cursor-pointer">

@@ -36,7 +36,14 @@ export default function AdminLoginPage() {
         throw new Error(err.error || "Erreur de connexion");
       }
 
-      router.push("/admin");
+      const result = await res.json();
+
+      // Redirect to password reset if first login or forced reset
+      if (result.mustResetPassword) {
+        router.push("/admin/reset-password");
+      } else {
+        router.push("/admin");
+      }
       router.refresh();
     } catch (err) {
       setError(

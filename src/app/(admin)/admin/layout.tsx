@@ -29,8 +29,8 @@ export default function AdminLayout({
   const pathname = usePathname();
   const router = useRouter();
 
-  // Don't show admin layout on login page
-  if (pathname === "/admin/login") {
+  // Don't show admin layout on login or password reset pages
+  if (pathname === "/admin/login" || pathname === "/admin/reset-password") {
     return <>{children}</>;
   }
 

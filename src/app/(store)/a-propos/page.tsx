@@ -36,7 +36,7 @@ export default function AProposPage() {
     "@type": "Organization",
     name: "DAHAB Bijoux",
     url: siteUrl,
-    logo: `${siteUrl}/logo.png`,
+    logo: `${siteUrl}/logo.svg`,
     description:
       "Bijouterie en ligne au Maroc. Bijoux \u00e9l\u00e9gants et accessibles pour la femme marocaine. Bagues, colliers, bracelets et boucles d'oreilles de 99 \u00e0 299 MAD.",
     foundingDate: "2024",
@@ -166,7 +166,7 @@ export default function AProposPage() {
               </h3>
               <p className="text-gray-600 text-sm leading-relaxed">
                 Nous livrons dans toutes les villes du Maroc. Livraison gratuite
-                &agrave; partir de 199 MAD. Votre commande arrive chez vous en 2 &agrave; 5
+                &agrave; partir de 299 MAD. Votre commande arrive chez vous en 2 &agrave; 5
                 jours ouvrables, soigneusement emball&eacute;e.
               </p>
             </div>
@@ -314,7 +314,7 @@ export default function AProposPage() {
               <li className="flex items-start gap-3">
                 <span className="text-brand-gold font-bold mt-0.5">&#x2022;</span>
                 <span>
-                  <strong>Livraison gratuite</strong> d&egrave;s 199 MAD d&apos;achat
+                  <strong>Livraison gratuite</strong> d&egrave;s 299 MAD d&apos;achat
                 </span>
               </li>
               <li className="flex items-start gap-3">

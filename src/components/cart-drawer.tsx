@@ -62,8 +62,9 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               <button
                 onClick={onClose}
                 className="p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Fermer le panier"
               >
-                <X size={20} />
+                <X size={20} aria-hidden="true" />
               </button>
             </div>
 
@@ -171,7 +172,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 </div>
                 {shipping > 0 && (
                   <p className="text-xs text-gray-400">
-                    Livraison gratuite a partir de 199 MAD
+                    Livraison gratuite a partir de 299 MAD
                   </p>
                 )}
                 <div className="flex justify-between font-display text-lg font-bold pt-2 border-t">

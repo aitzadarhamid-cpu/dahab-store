@@ -113,6 +113,40 @@ export async function POST(request: NextRequest) {
       attempts++;
     }
 
+    // Validate stock availability BEFORE creating order
+    const productIds = items.map((item: { id: string }) => item.id);
+    const products = await prisma.product.findMany({
+      where: { id: { in: productIds } },
+      select: { id: true, name: true, stock: true, price: true, active: true },
+    });
+
+    for (const item of items) {
+      const product = products.find((p) => p.id === item.id);
+      if (!product) {
+        return NextResponse.json(
+          { error: `Produit introuvable: ${item.name}` },
+          { status: 400 }
+        );
+      }
+      if (!product.active) {
+        return NextResponse.json(
+          { error: `Produit indisponible: ${product.name}` },
+          { status: 400 }
+        );
+      }
+      if (product.stock < item.quantity) {
+        return NextResponse.json(
+          {
+            error:
+              product.stock === 0
+                ? `${product.name} est en rupture de stock`
+                : `Stock insuffisant pour ${product.name} (${product.stock} restant${product.stock > 1 ? "s" : ""})`,
+          },
+          { status: 400 }
+        );
+      }
+    }
+
     // Create order with items in transaction
     const order = await prisma.$transaction(async (tx) => {
       const newOrder = await tx.order.create({

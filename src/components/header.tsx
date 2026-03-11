@@ -1,15 +1,29 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { ShoppingBag, Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ShoppingBag, Menu, X, Heart, Package, Search } from "lucide-react";
 import { useCart } from "@/hooks/useCart";
 import { CartDrawer } from "./cart-drawer";
+import { SearchModal } from "./store/search-modal";
 
 export function Header() {
   const { itemCount } = useCart();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  // Keyboard shortcut: Ctrl/Cmd + K to open search
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <>
@@ -50,15 +64,45 @@ export function Header() {
               >
                 Colliers
               </Link>
+              <Link
+                href="/mes-commandes"
+                className="text-sm font-medium text-gray-700 hover:text-brand-gold transition-colors"
+              >
+                Mes commandes
+              </Link>
             </nav>
 
             {/* Actions */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 md:gap-2">
+              {/* Search button */}
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Rechercher"
+              >
+                <Search size={20} className="text-brand-black" aria-hidden="true" />
+              </button>
+
+              <Link
+                href="/favoris"
+                className="hidden md:flex relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Mes favoris"
+              >
+                <Heart size={20} className="text-brand-black" aria-hidden="true" />
+              </Link>
+              <Link
+                href="/mes-commandes"
+                className="hidden md:flex relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Mes commandes"
+              >
+                <Package size={20} className="text-brand-black" aria-hidden="true" />
+              </Link>
               <button
                 onClick={() => setCartOpen(true)}
                 className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label={`Panier${itemCount > 0 ? ` (${itemCount} articles)` : ""}`}
               >
-                <ShoppingBag size={22} className="text-brand-black" />
+                <ShoppingBag size={22} className="text-brand-black" aria-hidden="true" />
                 {itemCount > 0 && (
                   <span className="absolute -top-1 -right-1 bg-brand-gold text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
                     {itemCount}
@@ -69,8 +113,10 @@ export function Header() {
               <button
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="md:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label={mobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                aria-expanded={mobileMenuOpen}
               >
-                {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+                {mobileMenuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
               </button>
             </div>
           </div>
@@ -107,6 +153,20 @@ export function Header() {
                 >
                   Colliers
                 </Link>
+                <Link
+                  href="/mes-commandes"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-sm font-medium text-gray-700 hover:text-brand-gold px-2 py-1"
+                >
+                  Mes commandes
+                </Link>
+                <Link
+                  href="/favoris"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="text-sm font-medium text-gray-700 hover:text-brand-gold px-2 py-1"
+                >
+                  Favoris
+                </Link>
               </div>
             </nav>
           )}
@@ -114,6 +174,7 @@ export function Header() {
       </header>
 
       <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+      <SearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>
   );
 }

@@ -48,11 +48,26 @@ export default async function BoutiquePage({ searchParams }: Props) {
       ? { price: "asc" }
       : searchParams.sort === "price-desc"
         ? { price: "desc" }
-        : { createdAt: "desc" };
+        : searchParams.sort === "popular"
+          ? { featured: "desc" }
+          : { createdAt: "desc" };
 
   const products = await prisma.product.findMany({
     where,
     orderBy,
+    select: {
+      id: true,
+      name: true,
+      slug: true,
+      price: true,
+      compareAtPrice: true,
+      images: true,
+      category: true,
+      material: true,
+      stock: true,
+      featured: true,
+      createdAt: true,
+    },
   });
 
   return (
@@ -60,6 +75,7 @@ export default async function BoutiquePage({ searchParams }: Props) {
       products={products}
       currentCategory={searchParams.category}
       currentSort={searchParams.sort}
+      currentMaterial={searchParams.material}
     />
   );
 }

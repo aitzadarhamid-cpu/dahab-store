@@ -12,6 +12,9 @@ export const orderFormSchema = z.object({
     .string()
     .min(5, "L'adresse doit contenir au moins 5 caracteres"),
   customerNote: z.string().optional(),
+  acceptTerms: z.literal(true, {
+    errorMap: () => ({ message: "Vous devez accepter les conditions generales de vente" }),
+  }),
 });
 
 export type OrderFormValues = z.infer<typeof orderFormSchema>;
@@ -42,6 +45,37 @@ export const loginFormSchema = z.object({
 });
 
 export type LoginFormValues = z.infer<typeof loginFormSchema>;
+
+// Strong password validation for admin accounts
+export const strongPasswordSchema = z
+  .string()
+  .min(12, "Le mot de passe doit contenir au moins 12 caracteres")
+  .regex(/[A-Z]/, "Le mot de passe doit contenir au moins une majuscule")
+  .regex(/[a-z]/, "Le mot de passe doit contenir au moins une minuscule")
+  .regex(/[0-9]/, "Le mot de passe doit contenir au moins un chiffre")
+  .regex(
+    /[^A-Za-z0-9]/,
+    "Le mot de passe doit contenir au moins un caractere special (!@#$%...)"
+  );
+
+export const changePasswordFormSchema = z
+  .object({
+    currentPassword: z
+      .string()
+      .min(1, "Le mot de passe actuel est requis"),
+    newPassword: strongPasswordSchema,
+    confirmPassword: z.string().min(1, "La confirmation est requise"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Les mots de passe ne correspondent pas",
+    path: ["confirmPassword"],
+  })
+  .refine((data) => data.currentPassword !== data.newPassword, {
+    message: "Le nouveau mot de passe doit etre different de l'ancien",
+    path: ["newPassword"],
+  });
+
+export type ChangePasswordFormValues = z.infer<typeof changePasswordFormSchema>;
 
 export function validatePhone(phone: string): boolean {
   return phoneRegex.test(phone);
