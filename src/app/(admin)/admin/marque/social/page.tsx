@@ -5,7 +5,6 @@ import {
   MessageCircle,
   FileText,
   Clock,
-  Instagram,
   Smartphone,
   Globe,
   Sparkles,

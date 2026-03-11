@@ -1,0 +1,93 @@
+# ============================================================
+# DAHAB — Docker ignore file
+# Excludes files that should NOT be copied into the Docker image.
+# This dramatically reduces build context size and prevents
+# secrets from leaking into the image.
+# ============================================================
+
+# ----- Dependencies (will be reinstalled inside Docker) -----
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ----- Next.js build output (rebuilt inside Docker) -----
+.next
+out
+
+# ----- Environment files — NEVER bake secrets into the image -----
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+# Keep .env.example (documentation only, no real secrets)
+!.env.example
+
+# ----- Version control -----
+.git
+.gitignore
+.gitattributes
+.github
+
+# ----- CI/CD platform configs (not needed in Docker) -----
+vercel.json
+netlify.toml
+.vercelignore
+.netlify
+
+# ----- Documentation (except README required by HF) -----
+CHANGELOG.md
+CONTRIBUTING.md
+LICENSE
+
+# ----- Development tooling -----
+.eslintrc*
+.eslintignore
+.prettierrc*
+.editorconfig
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__
+cypress
+playwright
+jest.config*
+
+# ----- OS artifacts -----
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ----- IDE configs -----
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ----- Temporary and log files -----
+*.tmp
+*.temp
+/tmp
+logs
+*.log
+
+# ----- Docker files themselves (avoid recursive copy) -----
+Dockerfile
+Dockerfile.*
+docker-compose*
+.dockerignore
+
+# ----- Claude/AI tooling -----
+.claude

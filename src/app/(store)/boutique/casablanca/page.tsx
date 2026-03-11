@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { Truck, Clock, Shield, MapPin, Star, Gem } from "lucide-react";
+import { Truck, Clock, Shield, Star, Gem } from "lucide-react";
 import { prisma } from "@/lib/prisma";
 import { formatPrice } from "@/lib/utils";
 

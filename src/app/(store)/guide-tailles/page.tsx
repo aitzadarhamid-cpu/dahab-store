@@ -84,7 +84,7 @@ export default function GuideTaillesPage() {
 
       {/* Methods */}
       <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-16">
-        {methods.map((method, idx) => (
+        {methods.map((method) => (
           <div key={method.title} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-brand-cream flex items-center justify-center">

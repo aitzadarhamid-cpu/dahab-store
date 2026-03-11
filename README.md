@@ -1,77 +1,111 @@
-# DAHAB - Bijouterie en Ligne Marocaine
+---
+title: DAHAB Bijoux
+emoji: 💛
+colorFrom: yellow
+colorTo: black
+sdk: docker
+app_port: 7860
+pinned: true
+license: proprietary
+---
 
-Boutique e-commerce de bijoux pour le marche marocain. Paiement a la livraison (COD), livraison partout au Maroc.
+# DAHAB — Bijouterie en Ligne Marocaine
 
-## Stack technique
+Boutique e-commerce de bijoux haut de gamme pour le marché marocain.
+Paiement à la livraison (COD), livraison partout au Maroc.
 
-- **Frontend**: Next.js 14, TypeScript, Tailwind CSS, Framer Motion
-- **Backend**: Next.js API Routes, Prisma ORM
-- **Base de donnees**: SQLite (dev) / PostgreSQL (prod)
-- **Authentification**: JWT (jose) + bcryptjs
-- **Validation**: Zod + react-hook-form
-- **Analytics**: Meta Pixel + Google Analytics 4
+## Stack
 
-## Installation rapide
+- **Frontend** : Next.js 14, TypeScript, Tailwind CSS, Framer Motion
+- **Backend** : Next.js API Routes, Prisma ORM
+- **Base de données** : PostgreSQL (Neon)
+- **Images** : Cloudflare R2 (CDN mondial, PoPs MENA)
+- **Emails** : Resend (transactionnels)
+- **Auth** : JWT (jose) + bcryptjs
+- **Déploiement** : Hugging Face Spaces (Docker, port 7860)
+
+## Déploiement HF Spaces
+
+L'application tourne comme un container Docker stateless sur Hugging Face Spaces.
+Toutes les données persistent en dehors du container :
+
+| Donnée | Stockage |
+|--------|---------|
+| Commandes, produits, clients | Neon PostgreSQL (`DATABASE_URL`) |
+| Images produits | Cloudflare R2 (`CLOUDFLARE_R2_*`) |
+| Emails transactionnels | Resend (`RESEND_API_KEY`) |
+
+### Variables d'environnement (HF Secrets)
+
+```
+DATABASE_URL=postgresql://...@neon.tech/neondb?sslmode=require
+DIRECT_URL=postgresql://...@neon.tech/neondb?sslmode=require
+JWT_SECRET=<openssl rand -base64 48>
+ADMIN_EMAIL=admin@dahab.ma
+ADMIN_PASSWORD=<mot-de-passe-fort>
+RESEND_API_KEY=re_...
+RESEND_FROM_EMAIL=DAHAB <noreply@dahab.ma>
+WHATSAPP_PHONE=+212XXXXXXXXX
+CLOUDFLARE_R2_ACCOUNT_ID=...
+CLOUDFLARE_R2_ACCESS_KEY_ID=...
+CLOUDFLARE_R2_SECRET_ACCESS_KEY=...
+CLOUDFLARE_R2_BUCKET_NAME=dahab-images
+CLOUDFLARE_R2_PUBLIC_URL=https://images.dahab.ma
+```
+
+### Build Args (HF Space Build Args)
+
+```
+NEXT_PUBLIC_SITE_URL=https://{username}-dahab.hf.space
+NEXT_PUBLIC_WHATSAPP_PHONE=+212XXXXXXXXX
+NEXT_PUBLIC_META_PIXEL_ID=<optionnel>
+NEXT_PUBLIC_GA_ID=<optionnel>
+```
+
+## Développement local
 
 ```bash
-# 1. Cloner le projet
-git clone <repo-url> dahab
-cd dahab
+# 1. Cloner
+git clone <repo-url> dahab && cd dahab
 
-# 2. Installer les dependances
+# 2. Dépendances
 npm install
 
-# 3. Configurer l'environnement
+# 3. Environnement
 cp .env.example .env
-# Editer .env avec vos valeurs
+# Éditer .env avec vos valeurs
 
-# 4. Creer la base de donnees et inserer les donnees
-npx prisma db push
+# 4. Base de données + seed
+npx prisma migrate dev
 npx prisma db seed
 
-# 5. Lancer le serveur de developpement
+# 5. Serveur dev
 npm run dev
+# → http://localhost:3000
 ```
 
-Le site sera accessible sur http://localhost:3000
-
-## Credentials admin
-
-Apres le seed, les identifiants admin sont affiches dans la console:
-
-- **Email**: admin@dahab.ma
-- **Mot de passe**: Dahab2024!
-
-Changez ces identifiants en production!
-
-## Configuration pour la production
-
-### Variables d'environnement requises
-
-```
-DATABASE_URL=postgresql://user:password@host:5432/dahab
-JWT_SECRET=votre-secret-jwt-securise-min-32-chars
-NEXT_PUBLIC_META_PIXEL_ID=votre-pixel-id
-NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
-WHATSAPP_PHONE=+212XXXXXXXXX
-NEXT_PUBLIC_SITE_URL=https://votre-domaine.ma
-```
-
-### Deploiement sur Vercel
+## Test Docker local
 
 ```bash
-# Installer Vercel CLI
-npm i -g vercel
-
-# Deployer
-vercel --prod
+# Build + run (miroir de la prod HF)
+docker-compose up --build
+# → http://localhost:7860
 ```
 
-Configurez les variables d'environnement dans les parametres du projet Vercel.
+## Tableau de bord unifié
 
-Pour PostgreSQL en production, utilisez Vercel Postgres ou Supabase.
+| Service | URL | Rôle |
+|---------|-----|------|
+| 🏠 Store live | `https://{user}-dahab.hf.space` | Boutique publique |
+| 🔧 Admin DAHAB | `.../admin` | Commandes, produits, promos |
+| 🤗 HF Space | `huggingface.co/spaces/{user}/dahab` | Rebuild, logs, secrets |
+| 🗄️ Neon DB | `console.neon.tech` | Base de données |
+| 🖼️ Cloudflare R2 | `dash.cloudflare.com → R2` | Images produits |
+| ☁️ Cloudflare DNS | `dash.cloudflare.com → domaine` | DNS, WAF, SSL |
+| 📧 Resend | `resend.com/emails` | Logs emails transactionnels |
+| 💓 Health | `.../api/health` | Statut app + DB en temps réel |
 
-## Structure du projet
+## Structure
 
 ```
 src/
@@ -80,37 +114,10 @@ src/
 │   ├── (admin)/admin/    # Dashboard admin
 │   └── api/              # API Routes
 ├── components/
-│   ├── ui/               # Composants UI reutilisables
+│   ├── ui/               # Composants UI réutilisables
 │   ├── store/            # Composants boutique
 │   ├── admin/            # Composants admin
 │   └── marketing/        # Composants conversion
-├── hooks/                # React hooks (cart, countdown, etc.)
-├── lib/                  # Utilitaires et configuration
-├── data/                 # Donnees statiques (villes, seed)
+├── lib/                  # Utilitaires (storage R2, email, auth…)
 └── types/                # Types TypeScript
 ```
-
-## Pages
-
-| Route | Description |
-|-------|-------------|
-| `/` | Page d'accueil avec bestsellers |
-| `/boutique` | Catalogue avec filtres |
-| `/produit/[slug]` | Fiche produit |
-| `/commander` | Checkout COD |
-| `/confirmation` | Confirmation de commande |
-| `/admin/login` | Connexion admin |
-| `/admin` | Dashboard admin |
-| `/admin/orders` | Gestion des commandes |
-| `/admin/products` | Gestion des produits |
-
-## Personnalisation
-
-### Numero WhatsApp
-Modifiez `WHATSAPP_PHONE` dans `.env` avec votre numero au format E.164
-
-### Couleurs
-Les couleurs de la marque sont dans `tailwind.config.ts` sous `brand`
-
-### Produits
-Ajoutez des produits via le dashboard admin ou editez `prisma/seed.ts`

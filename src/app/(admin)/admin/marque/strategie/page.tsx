@@ -113,16 +113,8 @@ const TIER_COLORS: Record<string, string> = {
   DIAMOND: "#3B82F6",
 };
 
-const SEASON_ICONS: Record<string, string> = {
-  "Saint-Valentin": "heart",
-  Ramadan: "moon",
-  "Eid Al Fitr": "gift",
-  "Fete des Meres": "flower",
-  "Eid Al Adha": "star",
-  Rentree: "book",
-  "Black Friday": "tag",
-  "Fin d'Annee": "sparkles",
-};
+// NOTE: SEASON_ICONS kept here for future use in season-based UI enhancements
+// const SEASON_ICONS: Record<string, string> = { ... };
 
 // ---------------------------------------------------------------------------
 // Formatting helpers

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MessageCircle, Mail, Clock, MapPin, Phone, Instagram } from "lucide-react";
+import { MessageCircle, Mail, Clock, MapPin, Instagram } from "lucide-react";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 const whatsappPhone = process.env.NEXT_PUBLIC_WHATSAPP_PHONE || "212600000000";
