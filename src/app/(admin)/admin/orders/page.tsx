@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Search, Download, MessageCircle } from "lucide-react";
+import { Search, Download, MessageCircle, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { formatPrice, getStatusLabel, timeAgo } from "@/lib/utils";
@@ -194,25 +194,36 @@ export default function AdminOrdersPage() {
                               </p>
                             ))}
                             {/* WhatsApp notification button */}
-                            {(() => {
-                              const waLink = getStatusUpdateWhatsAppLink({
-                                orderNumber: order.orderNumber,
-                                customerName: order.customerName,
-                                customerPhone: order.customerPhone,
-                                status: order.status,
-                              });
-                              return waLink ? (
-                                <a
-                                  href={waLink}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="inline-flex items-center gap-1.5 mt-2 px-3 py-1.5 bg-green-500 text-white text-xs font-medium rounded-lg hover:bg-green-600 transition-colors"
-                                >
-                                  <MessageCircle size={14} />
-                                  Notifier client via WhatsApp
-                                </a>
-                              ) : null;
-                            })()}
+                            <div className="flex items-center gap-2 mt-2">
+                              {(() => {
+                                const waLink = getStatusUpdateWhatsAppLink({
+                                  orderNumber: order.orderNumber,
+                                  customerName: order.customerName,
+                                  customerPhone: order.customerPhone,
+                                  status: order.status,
+                                });
+                                return waLink ? (
+                                  <a
+                                    href={waLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-500 text-white text-xs font-medium rounded-lg hover:bg-green-600 transition-colors"
+                                  >
+                                    <MessageCircle size={14} />
+                                    Notifier client via WhatsApp
+                                  </a>
+                                ) : null;
+                              })()}
+                              <a
+                                href={`/api/orders/${order.id}/pdf`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-gold text-white text-xs font-medium rounded-lg hover:bg-brand-gold-dark transition-colors"
+                              >
+                                <FileText size={14} />
+                                Bon de commande PDF
+                              </a>
+                            </div>
                           </div>
                         </td>
                       </tr>

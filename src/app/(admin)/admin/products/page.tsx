@@ -67,6 +67,33 @@ export default function AdminProductsPage() {
         </Link>
       </div>
 
+      {/* Low stock alert */}
+      {!loading && (() => {
+        const lowStockProducts = products.filter(p => p.active && p.stock <= 3);
+        if (lowStockProducts.length === 0) return null;
+        return (
+          <div className="mb-4 bg-orange-50 border border-orange-200 rounded-xl p-4">
+            <div className="flex items-start gap-3">
+              <div className="text-orange-500 mt-0.5">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                  <line x1="12" y1="9" x2="12" y2="13" />
+                  <line x1="12" y1="17" x2="12.01" y2="17" />
+                </svg>
+              </div>
+              <div>
+                <p className="font-medium text-orange-800 text-sm">
+                  {lowStockProducts.length} produit{lowStockProducts.length > 1 ? "s" : ""} en stock bas
+                </p>
+                <p className="text-xs text-orange-600 mt-1">
+                  {lowStockProducts.map(p => `${p.name} (${p.stock})`).join(" · ")}
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       <div className="bg-white rounded-xl shadow-sm overflow-hidden">
         {loading ? (
           <div className="p-8 text-center text-gray-400">Chargement...</div>

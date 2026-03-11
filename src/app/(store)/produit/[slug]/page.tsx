@@ -94,6 +94,22 @@ export default async function ProductPage({ params }: Props) {
     take: 4,
   });
 
+  const COMPLEMENT_MAP: Record<string, string> = {
+    COLLIER: "BOUCLES_OREILLES",
+    BAGUE: "BRACELET",
+    BRACELET: "BAGUE",
+    BOUCLES_OREILLES: "COLLIER",
+  };
+
+  const complementCategory = COMPLEMENT_MAP[product.category];
+  const complementProducts = complementCategory
+    ? await prisma.product.findMany({
+        where: { category: complementCategory, active: true },
+        take: 4,
+        orderBy: { createdAt: "desc" },
+      })
+    : [];
+
   const images: string[] = JSON.parse(product.images);
   const categoryLabel = getCategoryLabel(product.category);
   const categorySlug = CATEGORY_SLUG_MAP[product.category] || "boutique";
@@ -222,6 +238,7 @@ export default async function ProductPage({ params }: Props) {
       <ProductDetailClient
         product={product}
         relatedProducts={relatedProducts}
+        complementProducts={complementProducts}
       />
     </>
   );

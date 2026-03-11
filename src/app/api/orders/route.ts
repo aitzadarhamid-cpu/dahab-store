@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { generateOrderNumber, getShippingCost } from "@/lib/utils";
 import { sendWhatsAppNotification } from "@/lib/whatsapp";
+import { rateLimit, getClientIP } from "@/lib/rate-limit";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
@@ -41,6 +42,15 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = getClientIP(request);
+    const { success } = rateLimit(`order:${ip}`, { windowMs: 60 * 1000, maxRequests: 10 });
+    if (!success) {
+      return NextResponse.json(
+        { error: "Trop de requetes. Reessayez dans une minute." },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const {
       customerName,
@@ -221,6 +231,37 @@ export async function POST(request: NextRequest) {
       });
     } catch (e) {
       console.error("WhatsApp notification failed:", e);
+    }
+
+    // Send confirmation email (non-blocking)
+    if (order.customerEmail) {
+      try {
+        const { sendEmail } = await import("@/lib/email");
+        const { generateOrderConfirmationEmail } = await import(
+          "@/lib/emails/order-confirmation"
+        );
+        const emailContent = generateOrderConfirmationEmail({
+          orderNumber: order.orderNumber,
+          customerName: order.customerName,
+          customerCity: order.customerCity,
+          items: order.items.map((i) => ({
+            name: i.productName,
+            quantity: i.quantity,
+            priceAtOrder: i.priceAtOrder,
+          })),
+          subtotal: order.subtotal,
+          shipping: order.shipping,
+          discount: order.discount,
+          total: order.total,
+        });
+        await sendEmail({
+          to: order.customerEmail,
+          subject: emailContent.subject,
+          html: emailContent.html,
+        });
+      } catch (e) {
+        console.error("Email notification failed:", e);
+      }
     }
 
     return NextResponse.json(order, { status: 201 });

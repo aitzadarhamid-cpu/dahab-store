@@ -46,8 +46,50 @@ export async function PUT(
     const order = await prisma.order.update({
       where: { id: params.id },
       data: { status: body.status },
-      include: { items: true },
+      include: { items: { include: { product: { select: { slug: true } } } } },
     });
+
+    // Send status-based email notifications (non-blocking)
+    if (order.customerEmail) {
+      try {
+        const { sendEmail } = await import("@/lib/email");
+
+        if (body.status === "EXPEDIEE") {
+          const { generateShippingEmail } = await import(
+            "@/lib/emails/shipping-notification"
+          );
+          const emailContent = generateShippingEmail({
+            orderNumber: order.orderNumber,
+            customerName: order.customerName,
+            customerCity: order.customerCity,
+          });
+          await sendEmail({
+            to: order.customerEmail,
+            subject: emailContent.subject,
+            html: emailContent.html,
+          });
+        }
+
+        if (body.status === "LIVREE") {
+          const { generateReviewRequestEmail } = await import(
+            "@/lib/emails/review-request"
+          );
+          const firstProductSlug = order.items[0]?.product?.slug;
+          const emailContent = generateReviewRequestEmail({
+            orderNumber: order.orderNumber,
+            customerName: order.customerName,
+            productSlug: firstProductSlug ?? undefined,
+          });
+          await sendEmail({
+            to: order.customerEmail,
+            subject: emailContent.subject,
+            html: emailContent.html,
+          });
+        }
+      } catch (e) {
+        console.error("Status email notification failed:", e);
+      }
+    }
 
     return NextResponse.json(order);
   } catch (error) {
