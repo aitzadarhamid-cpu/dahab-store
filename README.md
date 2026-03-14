@@ -2,11 +2,11 @@
 title: DAHAB Bijoux
 emoji: 💛
 colorFrom: yellow
-colorTo: black
+colorTo: gray
 sdk: docker
 app_port: 7860
 pinned: true
-license: proprietary
+license: other
 ---
 
 # DAHAB — Bijouterie en Ligne Marocaine
