@@ -42,6 +42,10 @@ COPY . .
 # NEXT_PUBLIC_* variables are baked into the JS bundle at build time.
 # They must be passed as Docker build arguments from HF Space Build Args.
 # Safe placeholder defaults allow the image to compile even without them.
+# DATABASE_URL placeholder so Prisma client can initialize during build
+# (real value injected at runtime via HF Secrets)
+ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
+
 ARG NEXT_PUBLIC_SITE_URL=https://placeholder.hf.space
 ARG NEXT_PUBLIC_META_PIXEL_ID=""
 ARG NEXT_PUBLIC_GA_ID=""
