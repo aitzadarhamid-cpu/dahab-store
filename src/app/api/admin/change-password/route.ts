@@ -12,7 +12,7 @@ import { strongPasswordSchema } from "@/lib/validations";
 export async function POST(request: NextRequest) {
   try {
     const { admin, error } = await requireAdmin();
-    if (error || !admin) return error;
+    if (!admin) return error!;
 
     const { currentPassword, newPassword } = await request.json();
 

@@ -37,8 +37,8 @@ const ALLOWED_MIME: Record<string, string> = {
 
 export async function POST(req: NextRequest) {
   // 1. Auth check
-  const authError = await requireAdmin();
-  if (authError) return authError;
+  const { admin, error: authError } = await requireAdmin();
+  if (!admin) return authError!;
 
   // 2. Parse multipart form
   let formData: FormData;
