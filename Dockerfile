@@ -56,8 +56,12 @@ ENV NEXT_PUBLIC_WHATSAPP_PHONE=$NEXT_PUBLIC_WHATSAPP_PHONE
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
+# Increase Node heap for constrained HF Spaces build (2GB free tier)
+ENV NODE_OPTIONS="--max-old-space-size=1536"
+
 # Build the app — next.config.mjs must have output: "standalone"
-RUN npm run build
+# Output errors explicitly for HF build log visibility
+RUN npm run build 2>&1 || { echo "=== BUILD FAILED ==="; exit 1; }
 
 # ---------------------------------------------------------------
 # Stage 3: runner

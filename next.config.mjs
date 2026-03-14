@@ -37,6 +37,10 @@ const nextConfig = {
     ],
     formats: ["image/avif", "image/webp"],
   },
+  // Skip ESLint + TS errors during Docker build (CI handles these)
+  eslint: { ignoreDuringBuilds: true },
+  typescript: { ignoreBuildErrors: true },
+
   // Production optimizations
   poweredByHeader: false,
   compress: true,

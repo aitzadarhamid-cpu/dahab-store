@@ -45,7 +45,7 @@ CONTRIBUTING.md
 LICENSE
 
 # ----- Development tooling -----
-.eslintrc*
+# Keep .eslintrc* — needed by next build linting
 .eslintignore
 .prettierrc*
 .editorconfig
