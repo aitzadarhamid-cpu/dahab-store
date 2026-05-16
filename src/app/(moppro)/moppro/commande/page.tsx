@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { ArrowLeft, Lock, Truck, Shield, CreditCard, Check } from 'lucide-react';
+import { ArrowLeft, Lock, Truck, Shield, CreditCard, Check, Zap } from 'lucide-react';
 import { useCart } from '@/components/moppro/CartContext';
 
 interface FormData {
@@ -25,6 +25,7 @@ export default function CommandePage() {
   const { items, total, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState<'delivery' | 'payment'>('delivery');
+  const [stripeAvailable, setStripeAvailable] = useState<boolean | null>(null);
 
   const {
     register,
@@ -39,40 +40,49 @@ export default function CommandePage() {
   const onSubmit = async (data: FormData) => {
     setLoading(true);
     try {
-      const res = await fetch('/api/moppro/orders', {
+      const payload = {
+        customerName: `${data.firstName} ${data.lastName}`,
+        customerEmail: data.email,
+        customerPhone: data.phone,
+        customerAddress: `${data.address}, ${data.postalCode} ${data.city}`,
+        customerCity: data.city,
+        items: items.map((i) => ({ name: i.name, price: i.price, quantity: i.quantity })),
+        subtotal: total,
+        shipping: 0,
+        total,
+        withUpsell,
+      };
+
+      const res = await fetch('/api/moppro/create-checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          customerName: `${data.firstName} ${data.lastName}`,
-          customerEmail: data.email,
-          customerPhone: data.phone,
-          customerAddress: `${data.address}, ${data.postalCode} ${data.city}`,
-          customerCity: data.city,
-          items: items.map((i) => ({
-            name: i.name,
-            price: i.price,
-            quantity: i.quantity,
-          })),
-          subtotal: total,
-          shipping: 0,
-          total: total,
-          withUpsell,
-        }),
+        body: JSON.stringify(payload),
       });
       const result = await res.json();
-      clearCart();
-      router.push(
-        `/moppro/confirmation?order=${result.order.orderNumber}&total=${total.toFixed(2)}`
-      );
+
+      if (result.url) {
+        // Stripe Checkout — redirect to Stripe
+        setStripeAvailable(true);
+        clearCart();
+        window.location.href = result.url;
+      } else if (result.fallback) {
+        // Simulated payment
+        setStripeAvailable(false);
+        clearCart();
+        router.push(
+          `/moppro/confirmation?order=${result.order.orderNumber}&total=${result.order.total.toFixed(2)}&wa=${encodeURIComponent(result.waLink)}`
+        );
+      }
     } catch {
       alert('Une erreur est survenue. Veuillez réessayer.');
-    } finally {
       setLoading(false);
     }
   };
 
   const handleNextStep = async () => {
-    const valid = await trigger(['firstName', 'lastName', 'email', 'phone', 'address', 'postalCode', 'city']);
+    const valid = await trigger([
+      'firstName', 'lastName', 'email', 'phone', 'address', 'postalCode', 'city',
+    ]);
     if (valid) setStep('payment');
   };
 
@@ -80,7 +90,10 @@ export default function CommandePage() {
     return (
       <div className="min-h-screen bg-[#0a0f1e] flex flex-col items-center justify-center px-4">
         <p className="text-white mb-4">Votre panier est vide.</p>
-        <button onClick={() => router.push('/moppro')} className="bg-cyan-500 text-[#0a0f1e] font-bold py-3 px-8 rounded-xl">
+        <button
+          onClick={() => router.push('/moppro')}
+          className="bg-cyan-500 text-[#0a0f1e] font-bold py-3 px-8 rounded-xl"
+        >
           Retour au produit
         </button>
       </div>
@@ -92,7 +105,10 @@ export default function CommandePage() {
       <div className="max-w-lg mx-auto">
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
-          <button onClick={() => router.push('/moppro/panier')} className="text-gray-400 hover:text-white transition-colors">
+          <button
+            onClick={() => router.push('/moppro/panier')}
+            className="text-gray-400 hover:text-white transition-colors"
+          >
             <ArrowLeft className="w-5 h-5" />
           </button>
           <h1 className="text-xl font-black text-white">Finaliser ma commande</h1>
@@ -103,19 +119,27 @@ export default function CommandePage() {
         <div className="flex items-center gap-2 mb-8">
           {['Panier', 'Commande', 'Confirmation'].map((s, i) => (
             <div key={s} className="flex items-center gap-2 flex-1">
-              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
-                i <= 1 ? 'bg-cyan-500 text-[#0a0f1e]' : 'bg-white/10 text-gray-500'
-              }`}>
+              <div
+                className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
+                  i <= 1 ? 'bg-cyan-500 text-[#0a0f1e]' : 'bg-white/10 text-gray-500'
+                }`}
+              >
                 {i < 1 ? <Check className="w-4 h-4" /> : i + 1}
               </div>
-              <span className={`text-xs ${i === 1 ? 'text-white font-semibold' : i < 1 ? 'text-cyan-400' : 'text-gray-600'}`}>{s}</span>
+              <span
+                className={`text-xs ${
+                  i === 1 ? 'text-white font-semibold' : i < 1 ? 'text-cyan-400' : 'text-gray-600'
+                }`}
+              >
+                {s}
+              </span>
               {i < 2 && <div className="flex-1 h-px bg-white/10" />}
             </div>
           ))}
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* DELIVERY STEP */}
+          {/* ─── STEP 1 : LIVRAISON ─── */}
           {step === 'delivery' && (
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-4">
@@ -131,7 +155,9 @@ export default function CommandePage() {
                     placeholder="Marie"
                     className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
                   />
-                  {errors.firstName && <p className="text-red-400 text-xs mt-1">{errors.firstName.message}</p>}
+                  {errors.firstName && (
+                    <p className="text-red-400 text-xs mt-1">{errors.firstName.message}</p>
+                  )}
                 </div>
                 <div>
                   <label className="text-xs text-gray-400 mb-1 block">Nom *</label>
@@ -140,7 +166,9 @@ export default function CommandePage() {
                     placeholder="Dupont"
                     className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
                   />
-                  {errors.lastName && <p className="text-red-400 text-xs mt-1">{errors.lastName.message}</p>}
+                  {errors.lastName && (
+                    <p className="text-red-400 text-xs mt-1">{errors.lastName.message}</p>
+                  )}
                 </div>
               </div>
 
@@ -149,24 +177,34 @@ export default function CommandePage() {
                 <input
                   {...register('email', {
                     required: 'Requis',
-                    pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Email invalide' },
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: 'Email invalide',
+                    },
                   })}
                   type="email"
                   placeholder="marie@exemple.com"
                   className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
                 />
-                {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>}
+                {errors.email && (
+                  <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>
+                )}
               </div>
 
               <div>
                 <label className="text-xs text-gray-400 mb-1 block">Téléphone *</label>
                 <input
-                  {...register('phone', { required: 'Requis', minLength: { value: 10, message: 'Numéro invalide' } })}
+                  {...register('phone', {
+                    required: 'Requis',
+                    minLength: { value: 10, message: 'Numéro invalide' },
+                  })}
                   type="tel"
                   placeholder="06 12 34 56 78"
                   className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
                 />
-                {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone.message}</p>}
+                {errors.phone && (
+                  <p className="text-red-400 text-xs mt-1">{errors.phone.message}</p>
+                )}
               </div>
 
               <div>
@@ -176,18 +214,25 @@ export default function CommandePage() {
                   placeholder="12 rue de la Paix"
                   className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
                 />
-                {errors.address && <p className="text-red-400 text-xs mt-1">{errors.address.message}</p>}
+                {errors.address && (
+                  <p className="text-red-400 text-xs mt-1">{errors.address.message}</p>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs text-gray-400 mb-1 block">Code postal *</label>
                   <input
-                    {...register('postalCode', { required: 'Requis', pattern: { value: /^\d{5}$/, message: '5 chiffres requis' } })}
+                    {...register('postalCode', {
+                      required: 'Requis',
+                      pattern: { value: /^\d{5}$/, message: '5 chiffres requis' },
+                    })}
                     placeholder="75001"
                     className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
                   />
-                  {errors.postalCode && <p className="text-red-400 text-xs mt-1">{errors.postalCode.message}</p>}
+                  {errors.postalCode && (
+                    <p className="text-red-400 text-xs mt-1">{errors.postalCode.message}</p>
+                  )}
                 </div>
                 <div>
                   <label className="text-xs text-gray-400 mb-1 block">Ville *</label>
@@ -196,11 +241,12 @@ export default function CommandePage() {
                     placeholder="Paris"
                     className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-cyan-500/50 transition-colors text-sm"
                   />
-                  {errors.city && <p className="text-red-400 text-xs mt-1">{errors.city.message}</p>}
+                  {errors.city && (
+                    <p className="text-red-400 text-xs mt-1">{errors.city.message}</p>
+                  )}
                 </div>
               </div>
 
-              {/* Delivery info */}
               <div className="bg-green-500/10 border border-green-500/30 rounded-xl p-3 flex items-center gap-3">
                 <Truck className="w-5 h-5 text-green-400 flex-shrink-0" />
                 <div>
@@ -219,27 +265,46 @@ export default function CommandePage() {
             </div>
           )}
 
-          {/* PAYMENT STEP */}
+          {/* ─── STEP 2 : PAIEMENT ─── */}
           {step === 'payment' && (
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-4">
-                <button type="button" onClick={() => setStep('delivery')} className="text-gray-400 hover:text-white">
+                <button
+                  type="button"
+                  onClick={() => setStep('delivery')}
+                  className="text-gray-400 hover:text-white"
+                >
                   <ArrowLeft className="w-4 h-4" />
                 </button>
                 <CreditCard className="w-5 h-5 text-cyan-400" />
-                <h2 className="text-white font-bold">Informations de paiement</h2>
+                <h2 className="text-white font-bold">Paiement sécurisé</h2>
                 <Lock className="w-4 h-4 text-green-400 ml-auto" />
               </div>
 
               {/* Delivery recap */}
               <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-3 text-xs text-gray-400">
                 <p className="font-semibold text-white mb-1">Livraison à :</p>
-                <p>{getValues('firstName')} {getValues('lastName')} · {getValues('phone')}</p>
-                <p>{getValues('address')}, {getValues('postalCode')} {getValues('city')}</p>
+                <p>
+                  {getValues('firstName')} {getValues('lastName')} · {getValues('phone')}
+                </p>
+                <p>
+                  {getValues('address')}, {getValues('postalCode')} {getValues('city')}
+                </p>
+              </div>
+
+              {/* Stripe badge */}
+              <div className="bg-gradient-to-r from-cyan-500/5 to-purple-500/5 border border-cyan-500/20 rounded-xl p-3 flex items-center gap-3">
+                <Zap className="w-5 h-5 text-cyan-400 flex-shrink-0" />
+                <div>
+                  <p className="text-white font-bold text-sm">Paiement via Stripe sécurisé</p>
+                  <p className="text-gray-400 text-xs">
+                    CB, Visa, Mastercard, Apple Pay, Google Pay — chiffrement SSL 256-bit
+                  </p>
+                </div>
               </div>
 
               <div className="bg-yellow-500/5 border border-yellow-500/20 rounded-xl p-3 text-xs text-yellow-400 text-center">
-                🔒 Paiement simulé — Aucune carte réellement débitée
+                🔒 Mode démo — Aucune carte réellement débitée
               </div>
 
               <div>
@@ -288,7 +353,9 @@ export default function CommandePage() {
                 <h3 className="text-white font-bold text-sm mb-3">Votre commande</h3>
                 {items.map((item) => (
                   <div key={item.id} className="flex justify-between text-sm mb-1">
-                    <span className="text-gray-400">{item.name} × {item.quantity}</span>
+                    <span className="text-gray-400">
+                      {item.name} × {item.quantity}
+                    </span>
                     <span className="text-white">{(item.price * item.quantity).toFixed(2)} €</span>
                   </div>
                 ))}
@@ -310,7 +377,7 @@ export default function CommandePage() {
                 {loading ? (
                   <span className="flex items-center gap-2">
                     <span className="w-4 h-4 border-2 border-[#0a0f1e]/30 border-t-[#0a0f1e] rounded-full animate-spin" />
-                    Traitement...
+                    {stripeAvailable ? 'Redirection Stripe...' : 'Traitement...'}
                   </span>
                 ) : (
                   <>

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" fill="none">
+  <rect width="300" height="300" fill="#0a0f1e"/>
+  <!-- Background glow -->
+  <ellipse cx="150" cy="160" rx="120" ry="100" fill="#00d4ff" opacity="0.06"/>
+
+  <!-- Sponge head — top view -->
+  <rect x="40" y="100" width="220" height="100" rx="18" fill="url(#spongeTop)"/>
+
+  <!-- Divider line -->
+  <line x1="150" y1="106" x2="150" y2="194" stroke="#00b8d9" stroke-width="2" stroke-dasharray="4,3" opacity="0.5"/>
+
+  <!-- Left sponge texture -->
+  <rect x="50" y="112" width="88" height="14" rx="7" fill="white" opacity="0.1"/>
+  <rect x="50" y="132" width="88" height="14" rx="7" fill="white" opacity="0.07"/>
+  <rect x="50" y="152" width="88" height="14" rx="7" fill="white" opacity="0.1"/>
+  <rect x="50" y="172" width="88" height="14" rx="7" fill="white" opacity="0.07"/>
+
+  <!-- Right sponge texture -->
+  <rect x="162" y="112" width="88" height="14" rx="7" fill="white" opacity="0.1"/>
+  <rect x="162" y="132" width="88" height="14" rx="7" fill="white" opacity="0.07"/>
+  <rect x="162" y="152" width="88" height="14" rx="7" fill="white" opacity="0.1"/>
+  <rect x="162" y="172" width="88" height="14" rx="7" fill="white" opacity="0.07"/>
+
+  <!-- PVA labels -->
+  <text x="94" y="154" font-family="system-ui,sans-serif" font-size="13" fill="white" opacity="0.6" text-anchor="middle" font-weight="bold">PVA</text>
+  <text x="206" y="154" font-family="system-ui,sans-serif" font-size="13" fill="white" opacity="0.6" text-anchor="middle" font-weight="bold">PVA</text>
+
+  <!-- Title -->
+  <text x="150" y="48" font-family="system-ui,sans-serif" font-size="13" fill="#00d4ff" text-anchor="middle" font-weight="bold">DOUBLE ÉPONGE PVA</text>
+  <text x="150" y="66" font-family="system-ui,sans-serif" font-size="10" fill="#8899bb" text-anchor="middle">Vue du dessus · 28 cm</text>
+
+  <!-- Width arrow -->
+  <line x1="40" y1="222" x2="260" y2="222" stroke="#00d4ff" stroke-width="1" opacity="0.4"/>
+  <polygon points="40,218 40,226 30,222" fill="#00d4ff" opacity="0.4"/>
+  <polygon points="260,218 260,226 270,222" fill="#00d4ff" opacity="0.4"/>
+  <text x="150" y="240" font-family="system-ui,sans-serif" font-size="10" fill="#00d4ff" text-anchor="middle" opacity="0.7">28 cm</text>
+
+  <!-- Antibactérien badge -->
+  <rect x="88" y="260" width="124" height="26" rx="13" fill="#00d4ff" opacity="0.15" stroke="#00d4ff" stroke-width="1" stroke-opacity="0.4"/>
+  <text x="150" y="278" font-family="system-ui,sans-serif" font-size="10" fill="#00d4ff" text-anchor="middle" font-weight="bold">🛡️ Antibactérienne</text>
+
+  <defs>
+    <linearGradient id="spongeTop" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00c4ef"/>
+      <stop offset="100%" stop-color="#0088bb"/>
+    </linearGradient>
+  </defs>
+</svg>

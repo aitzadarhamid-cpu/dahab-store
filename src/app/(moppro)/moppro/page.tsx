@@ -148,11 +148,19 @@ function Stars({ rating, size = 4 }: { rating: number; size?: number }) {
   );
 }
 
+const GALLERY = [
+  { src: '/moppro-hero.svg', label: 'Vue générale' },
+  { src: '/moppro-detail-sponge.svg', label: 'Double éponge PVA' },
+  { src: '/moppro-detail-wringer.svg', label: 'Essorage auto' },
+  { src: '/moppro-detail-360.svg', label: 'Tête 360°' },
+];
+
 export default function MopProPage() {
   const router = useRouter();
   const { addItem, itemCount } = useCart();
   const [stock, setStock] = useState(47);
   const [added, setAdded] = useState(false);
+  const [activeImg, setActiveImg] = useState(0);
 
   useEffect(() => {
     fetch('/api/moppro/stock')
@@ -193,26 +201,47 @@ export default function MopProPage() {
       <section className="relative overflow-hidden px-4 pt-10 pb-12">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(0,212,255,0.08)_0%,_transparent_60%)]" />
         <div className="max-w-md mx-auto relative">
-          {/* Product visual */}
-          <div className="relative mx-auto mb-8 w-72 h-80">
-            {/* Glow background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/15 to-transparent rounded-3xl border border-cyan-500/20 shadow-[0_0_80px_rgba(0,212,255,0.15)]" />
-            {/* SVG illustration */}
-            <img
-              src="/moppro-hero.svg"
-              alt="MopPro Elite — balai serpillière double rouleau essorage automatique"
-              className="absolute inset-0 w-full h-full object-contain p-4 drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]"
-            />
-            {/* Floating badges */}
-            <span className="absolute top-3 left-3 bg-yellow-400 text-[#0a0f1e] text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
-              Best Seller
-            </span>
-            <span className="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
-              −40%
-            </span>
-            <span className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-[#0a0f1e]/80 backdrop-blur text-cyan-400 text-xs font-bold px-3 py-1 rounded-full border border-cyan-500/30 whitespace-nowrap">
-              ⭐ 4.9 / 5 · 1 247 avis
-            </span>
+          {/* Product gallery */}
+          <div className="mb-6">
+            {/* Main image */}
+            <div className="relative mx-auto w-72 h-80">
+              <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/15 to-transparent rounded-3xl border border-cyan-500/20 shadow-[0_0_80px_rgba(0,212,255,0.15)]" />
+              <img
+                src={GALLERY[activeImg].src}
+                alt="MopPro Elite"
+                className="absolute inset-0 w-full h-full object-contain p-4 drop-shadow-[0_0_30px_rgba(0,212,255,0.3)] transition-opacity duration-200"
+              />
+              <span className="absolute top-3 left-3 bg-yellow-400 text-[#0a0f1e] text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
+                Best Seller
+              </span>
+              <span className="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
+                −40%
+              </span>
+              <span className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-[#0a0f1e]/80 backdrop-blur text-cyan-400 text-xs font-bold px-3 py-1 rounded-full border border-cyan-500/30 whitespace-nowrap">
+                ⭐ 4.9 / 5 · 1 247 avis
+              </span>
+            </div>
+            {/* Thumbnails */}
+            <div className="flex gap-2 justify-center mt-4">
+              {GALLERY.map((img, i) => (
+                <button
+                  key={img.src}
+                  onClick={() => setActiveImg(i)}
+                  className={`w-14 h-14 rounded-xl border-2 overflow-hidden transition-all flex-shrink-0 ${
+                    activeImg === i
+                      ? 'border-cyan-400 shadow-[0_0_12px_rgba(0,212,255,0.4)]'
+                      : 'border-white/10 hover:border-white/30'
+                  }`}
+                >
+                  <img
+                    src={img.src}
+                    alt={img.label}
+                    className="w-full h-full object-contain bg-[#0d1526]"
+                  />
+                </button>
+              ))}
+            </div>
+            <p className="text-center text-xs text-gray-500 mt-2">{GALLERY[activeImg].label}</p>
           </div>
 
           {/* Name & price */}

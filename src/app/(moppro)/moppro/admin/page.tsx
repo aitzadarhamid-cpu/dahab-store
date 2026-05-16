@@ -15,6 +15,7 @@ import {
   BarChart3,
   Minus,
   Plus,
+  MessageCircle,
 } from 'lucide-react';
 
 interface Order {
@@ -343,6 +344,31 @@ export default function AdminPage() {
                                 </p>
                               ))}
                             </div>
+                            {/* WhatsApp buttons */}
+                            <div className="flex gap-2 mb-3 flex-wrap">
+                              {(['EN_COURS', 'EXPEDIE', 'LIVRE'] as const).map((st) => {
+                                const phone = order.customerPhone.replace(/[^0-9]/g, '');
+                                const msgs: Record<string, string> = {
+                                  EN_COURS: `Bonjour ${order.customerName} ! Votre MopPro Elite ${order.orderNumber} est en cours de préparation. Expédition sous 24h ! 🚀`,
+                                  EXPEDIE: `Bonjour ${order.customerName} ! Votre MopPro Elite ${order.orderNumber} vient d'être expédié. Livraison dans 2-3 jours 📦`,
+                                  LIVRE: `Bonjour ${order.customerName} ! Votre MopPro Elite ${order.orderNumber} a été livré ✅ Nous espérons qu'il vous donne entière satisfaction !`,
+                                };
+                                const waUrl = `https://wa.me/${phone}?text=${encodeURIComponent(msgs[st])}`;
+                                return (
+                                  <a
+                                    key={st}
+                                    href={waUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-1 text-xs bg-green-500/10 border border-green-500/30 text-green-400 rounded-lg px-2 py-1.5 hover:bg-green-500/20 transition-colors"
+                                  >
+                                    <MessageCircle className="w-3 h-3" />
+                                    {st === 'EN_COURS' ? 'Préparation' : st === 'EXPEDIE' ? 'Expédié' : 'Livré'}
+                                  </a>
+                                );
+                              })}
+                            </div>
+                            {/* Status buttons */}
                             <div className="flex gap-2 flex-wrap">
                               {Object.entries(STATUS_LABELS).map(([key, { label, color }]) => (
                                 <button
