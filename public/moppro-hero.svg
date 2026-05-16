@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 420" fill="none">
+  <!-- Background glow -->
+  <ellipse cx="150" cy="370" rx="90" ry="18" fill="#00d4ff" opacity="0.08"/>
+
+  <!-- Handle shadow -->
+  <rect x="143" y="30" width="14" height="260" rx="7" fill="#0a0f2e" opacity="0.4" transform="translate(4,4)"/>
+
+  <!-- Aluminium handle -->
+  <rect x="143" y="30" width="14" height="260" rx="7" fill="url(#handleGrad)"/>
+
+  <!-- Handle shine -->
+  <rect x="145" y="35" width="4" height="248" rx="2" fill="white" opacity="0.15"/>
+
+  <!-- Telescopic joint -->
+  <rect x="139" y="155" width="22" height="12" rx="4" fill="#1e2a4a"/>
+  <rect x="141" y="157" width="18" height="8" rx="3" fill="#253156"/>
+
+  <!-- Lever mechanism -->
+  <rect x="125" y="195" width="50" height="16" rx="8" fill="url(#leverGrad)"/>
+  <rect x="127" y="197" width="46" height="12" rx="6" fill="url(#leverInner)"/>
+  <circle cx="150" cy="203" r="5" fill="#00d4ff" opacity="0.9"/>
+  <circle cx="150" cy="203" r="2.5" fill="white"/>
+
+  <!-- Wringer block -->
+  <rect x="110" y="285" width="80" height="18" rx="5" fill="#1a2340"/>
+  <rect x="113" y="288" width="74" height="12" rx="4" fill="#1e2a4a"/>
+  <!-- Wringer bars -->
+  <line x1="135" y1="288" x2="135" y2="300" stroke="#253156" stroke-width="1.5"/>
+  <line x1="150" y1="288" x2="150" y2="300" stroke="#253156" stroke-width="1.5"/>
+  <line x1="165" y1="288" x2="165" y2="300" stroke="#253156" stroke-width="1.5"/>
+
+  <!-- Connection neck -->
+  <rect x="144" y="300" width="12" height="16" rx="3" fill="#1a2340"/>
+
+  <!-- Sponge head glow -->
+  <rect x="78" y="316" width="144" height="56" rx="14" fill="#00d4ff" opacity="0.12"/>
+
+  <!-- Sponge head main -->
+  <rect x="80" y="314" width="140" height="54" rx="12" fill="url(#spongeGrad)"/>
+
+  <!-- Sponge divider -->
+  <line x1="150" y1="318" x2="150" y2="364" stroke="#00b8d9" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.6"/>
+
+  <!-- Sponge texture left -->
+  <rect x="88" y="321" width="52" height="8" rx="4" fill="white" opacity="0.08"/>
+  <rect x="88" y="333" width="52" height="8" rx="4" fill="white" opacity="0.06"/>
+  <rect x="88" y="345" width="52" height="8" rx="4" fill="white" opacity="0.08"/>
+
+  <!-- Sponge texture right -->
+  <rect x="158" y="321" width="52" height="8" rx="4" fill="white" opacity="0.08"/>
+  <rect x="158" y="333" width="52" height="8" rx="4" fill="white" opacity="0.06"/>
+  <rect x="158" y="345" width="52" height="8" rx="4" fill="white" opacity="0.08"/>
+
+  <!-- Sponge labels -->
+  <text x="114" y="343" font-family="system-ui,sans-serif" font-size="8" fill="white" opacity="0.5" text-anchor="middle">PVA</text>
+  <text x="186" y="343" font-family="system-ui,sans-serif" font-size="8" fill="white" opacity="0.5" text-anchor="middle">PVA</text>
+
+  <!-- Water drops animation hint -->
+  <circle cx="100" cy="395" r="4" fill="#00d4ff" opacity="0.3"/>
+  <circle cx="150" cy="400" r="3" fill="#00d4ff" opacity="0.2"/>
+  <circle cx="200" cy="393" r="4" fill="#00d4ff" opacity="0.3"/>
+
+  <!-- 360° badge -->
+  <circle cx="248" cy="340" r="22" fill="#0a0f2e" stroke="#00d4ff" stroke-width="1.5" opacity="0.9"/>
+  <text x="248" y="337" font-family="system-ui,sans-serif" font-size="9" fill="#00d4ff" text-anchor="middle" font-weight="bold">360°</text>
+  <text x="248" y="349" font-family="system-ui,sans-serif" font-size="7" fill="#00d4ff" text-anchor="middle" opacity="0.7">rotatif</text>
+
+  <!-- Auto wring badge -->
+  <rect x="28" y="190" width="68" height="28" rx="10" fill="#0a0f2e" stroke="#00d4ff" stroke-width="1.5" opacity="0.9"/>
+  <text x="62" y="202" font-family="system-ui,sans-serif" font-size="7" fill="#00d4ff" text-anchor="middle" font-weight="bold">Essorage</text>
+  <text x="62" y="213" font-family="system-ui,sans-serif" font-size="7" fill="#00d4ff" text-anchor="middle">automatique</text>
+
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="handleGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#8899bb"/>
+      <stop offset="40%" stop-color="#c0cde0"/>
+      <stop offset="70%" stop-color="#a0afc8"/>
+      <stop offset="100%" stop-color="#6677aa"/>
+    </linearGradient>
+    <linearGradient id="leverGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00d4ff"/>
+      <stop offset="100%" stop-color="#0099cc"/>
+    </linearGradient>
+    <linearGradient id="leverInner" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00eeff"/>
+      <stop offset="100%" stop-color="#00aad4"/>
+    </linearGradient>
+    <linearGradient id="spongeGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#00c4ef"/>
+      <stop offset="100%" stop-color="#0088bb"/>
+    </linearGradient>
+  </defs>
+</svg>

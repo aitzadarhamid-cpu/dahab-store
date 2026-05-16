@@ -194,24 +194,15 @@ export default function MopProPage() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(0,212,255,0.08)_0%,_transparent_60%)]" />
         <div className="max-w-md mx-auto relative">
           {/* Product visual */}
-          <div className="relative mx-auto mb-8 w-64 h-72">
-            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/20 to-transparent rounded-3xl border border-cyan-500/20 shadow-[0_0_60px_rgba(0,212,255,0.12)]" />
-            {/* Mop SVG illustration */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <div className="relative">
-                {/* Handle */}
-                <div className="w-3 h-40 bg-gradient-to-b from-gray-300 to-gray-500 rounded-full mx-auto mb-0 shadow-md" />
-                {/* Lever */}
-                <div className="absolute top-16 left-1/2 -translate-x-1/2 w-10 h-3 bg-cyan-500 rounded-full shadow-[0_0_10px_rgba(0,212,255,0.6)]" />
-                {/* Wringer */}
-                <div className="w-14 h-4 bg-gray-700 border border-gray-600 rounded-sm mx-auto" />
-                {/* Sponge head */}
-                <div className="w-28 h-8 bg-gradient-to-r from-cyan-600 to-cyan-400 rounded-lg mx-auto mt-0.5 shadow-[0_4px_15px_rgba(0,212,255,0.4)] flex items-center justify-center gap-1">
-                  <div className="w-12 h-6 bg-cyan-300/30 rounded border border-cyan-400/50" />
-                  <div className="w-12 h-6 bg-cyan-300/30 rounded border border-cyan-400/50" />
-                </div>
-              </div>
-            </div>
+          <div className="relative mx-auto mb-8 w-72 h-80">
+            {/* Glow background */}
+            <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/15 to-transparent rounded-3xl border border-cyan-500/20 shadow-[0_0_80px_rgba(0,212,255,0.15)]" />
+            {/* SVG illustration */}
+            <img
+              src="/moppro-hero.svg"
+              alt="MopPro Elite — balai serpillière double rouleau essorage automatique"
+              className="absolute inset-0 w-full h-full object-contain p-4 drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]"
+            />
             {/* Floating badges */}
             <span className="absolute top-3 left-3 bg-yellow-400 text-[#0a0f1e] text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
               Best Seller
@@ -219,7 +210,7 @@ export default function MopProPage() {
             <span className="absolute top-3 right-3 bg-red-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
               −40%
             </span>
-            <span className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-[#0a0f1e]/80 backdrop-blur text-cyan-400 text-xs font-bold px-3 py-1 rounded-full border border-cyan-500/30">
+            <span className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-[#0a0f1e]/80 backdrop-blur text-cyan-400 text-xs font-bold px-3 py-1 rounded-full border border-cyan-500/30 whitespace-nowrap">
               ⭐ 4.9 / 5 · 1 247 avis
             </span>
           </div>
